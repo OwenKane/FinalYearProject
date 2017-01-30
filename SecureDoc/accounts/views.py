@@ -10,10 +10,9 @@ def signup(request):
         if request.POST['password1'] == request.POST['password2']:
             try:
                 User.objects.get(username=request.POST['username'])
-            except User.DoesNotExist
-
-            User.objects.create_user(request.POST['username'], password=request.POST['password1'])
-            return render(request, 'accounts/signup.html')
+            except User.DoesNotExist:
+                User.objects.create_user(request.POST['username'], password=request.POST['password1'])
+                return render(request, 'accounts/signup.html')
         else:
             return render(request, 'accounts/signup.html', {'error':'Passwords didn\'t match '})
     else:
