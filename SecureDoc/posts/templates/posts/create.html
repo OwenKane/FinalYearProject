@@ -2,9 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Create</title>
+    <title>New Post</title>
+    <h1>New Post!</h1>
+
+    {%if error %}
+    {{ error }}
+    <br/><br/>
+    {% endif %}
+
+    <form method="POST" action="{% url 'posts:create' %}">
+        {% csrf_token %}
+
+        Tile:
+        <br />
+        <input type="text" name="title" />
+        <br />
+
+        Document:
+        <br />
+        <input type="text" name="document" />
+        <br />
+
+        <input type="submit" value="Save">
+    </form>
 </head>
 <body>
-    this is the create page
+
 </body>
 </html>
