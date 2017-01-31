@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'^$', lists.views.home),
     url(r'^list/(?P<list_id>[0-9]+)/$', lists.views.list_detail, name="list_detail"),
     url(r'^signup/', accounts.views.signup, name="signup"),
+    url(r'^login/', accounts.views.loginview, name="login"),
 ]
