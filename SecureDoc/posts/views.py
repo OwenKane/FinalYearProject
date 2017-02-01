@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import Post
@@ -26,4 +26,10 @@ def create(request):
 
 def home(request):
     posts = Post.objects.order_by('pub_date')
-    return render(request, 'posts/home.html', {'posts':posts})
+    return render(request, 'posts/home.html', {'posts': posts})
+
+
+####
+def post_detail(request, post_id):
+    postdetails = get_object_or_404(Post, pk=post_id)
+    return render(request, 'posts/post_detail.html', {'post': postdetails})

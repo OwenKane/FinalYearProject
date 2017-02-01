@@ -10,3 +10,7 @@ class Post(models.Model):
     pub_date = models.DateTimeField()
     author = models.ForeignKey(User)
     nominated = models.TextField()
+
+
+    def __str__(self):
+        return self.title

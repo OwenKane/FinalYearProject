@@ -12,10 +12,10 @@
 
 
     {% for posts in posts.all %}
-
-    <a href="{{ posts.url }}">{{ posts.title }}</a>
+    <a href="{% url 'posts:post_detail' posts.id %}">{{posts.title}}</a>
     <br/>
-
+    {{posts.pub_date}} by {{posts.author.username}}
+    <br/><br/>
     {% endfor %}
 
 </head>

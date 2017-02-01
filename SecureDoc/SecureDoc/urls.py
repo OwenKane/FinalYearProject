@@ -16,13 +16,12 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 import lists.views
+import posts.views
 from posts import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    #url(r'^$', lists.views.home),
     url(r'^$', views.home, name="home"),
-    url(r'^list/(?P<list_id>[0-9]+)/$', lists.views.list_detail, name="list_detail"),
     url(r'^accounts/', include('accounts.urls')),
     url(r'^posts/', include('posts.urls')),
 ]
