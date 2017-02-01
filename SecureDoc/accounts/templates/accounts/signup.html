@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Sign up!</title>
+
+</head>
+<body>
+
+    {% extends 'base.html' %}
+
+    {% block content %}
+
     <h1>Sign Up!</h1>
 
     {%if error %}
@@ -29,8 +37,8 @@
 
         <input type="submit" value="SignUp">
     </form>
-</head>
-<body>
+
+    {% endblock %}
 
 </body>
 </html>

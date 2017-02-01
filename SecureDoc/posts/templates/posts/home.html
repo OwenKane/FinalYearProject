@@ -3,6 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
+</head>
+<body>
+
+    {% extends 'base.html' %}
+
+    {% block content %}
+
     <h1>Secure Document Sharing</h1>
     <a href="{% url 'posts:create' %}">New Document</a>
 
@@ -18,8 +25,8 @@
     <br/><br/>
     {% endfor %}
 
-</head>
-<body>
+
+    {% endblock %}}
 
 </body>
 </html>
