@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <h1>Secure Document Sharing</h1>
+    <a href="{% url 'posts:create' %}">New Document</a>
+
+
+    <br/>
+    <br/>
+
+
+    {% for posts in posts.all %}
+
+    <a href="{{ posts.url }}">{{ posts.title }}</a>
+    <br/>
+
+    {% endfor %}
+
+</head>
+<body>
+
+</body>
+</html>
