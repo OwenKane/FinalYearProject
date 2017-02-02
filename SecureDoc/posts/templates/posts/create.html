@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script  type='text/javascript' src="/static/css/doc.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/doc.css">
     <meta charset="UTF-8">
     <title>New Post</title>
 </head>
@@ -28,6 +30,27 @@
         <br />
         <input type="text" name="document" />
         <br /><br/>
+
+
+        <div id="doc">
+
+        <button onclick="underline()">Underline Text</button>
+        <button onclick="link()">Link</button>
+        <button onclick="displayhtml()">Display HTML</button>
+        <!-- Make it content editable attribute true so that we can edit inside the div tag and also enable execCommand to edit content inside it.-->
+        <div class="editor" contenteditable="true" spellcheck="false">
+            This is the text editor
+        </div>
+
+        <div class="codeoutput">
+            Testing
+            <!-- <pre> tags reserves whitespace and newline characters. -->
+            <pre class="htmloutput">
+            </pre>
+        </div>
+
+        </div>
+
 
         <input input class="btn btn-primary" type="submit" value="Save">
     </form>
