@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script  type='text/javascript' src="/static/css/doc.js"></script>
+
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/ckeditor/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript" src="/static/ckeditor/ckeditor-init.js"></script>
+
+    <script type='text/javascript' src="/static/js/doc.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/css/doc.css">
     <meta charset="UTF-8">
     <title>New Post</title>
@@ -26,34 +31,18 @@
         <input type="text" name="title" />
         <br />
 
-        Document:
-        <br />
-        <input type="text" name="document" />
-        <br /><br/>
 
+        {% load wysiwyg %}
+        {% wysiwyg_setup %}
 
-        <div id="doc">
+        <textarea id="foo" name="document"></textarea>
 
-        <button onclick="underline()">Underline Text</button>
-        <button onclick="link()">Link</button>
-        <button onclick="displayhtml()">Display HTML</button>
-        <!-- Make it content editable attribute true so that we can edit inside the div tag and also enable execCommand to edit content inside it.-->
-        <div class="editor" contenteditable="true" spellcheck="false">
-            This is the text editor
-        </div>
-
-        <div class="codeoutput">
-            Testing
-            <!-- <pre> tags reserves whitespace and newline characters. -->
-            <pre class="htmloutput">
-            </pre>
-        </div>
-
-        </div>
+        {% wysiwyg_editor "foo" %}
 
 
         <input input class="btn btn-primary" type="submit" value="Save">
     </form>
+
 
     {% endblock %}
 

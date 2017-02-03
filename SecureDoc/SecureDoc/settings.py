@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'lists',
     'accounts',
     'posts',
+    'django_wysiwyg',
+    'ckeditor',
+    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -115,6 +118,12 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+DJANGO_WYSIWYG_FLAVOR = "ckeditor"
+
+CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
 
 
 # Static files (CSS, JavaScript, Images)

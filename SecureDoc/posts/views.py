@@ -10,10 +10,12 @@ from .models import Post
 @login_required
 def create(request):
     if request.method == 'POST':
-        if request.POST['title'] and request.POST['document']:
+        print(request.POST.get('title'))
+        print(request.POST.get('document'))
+        if request.POST.get('title', False) and request.POST.get('document', False):
             post = Post()
-            post.title = request.POST['title']
-            post.document = request.POST['document']
+            post.title = request.POST.get('title', False)
+            post.document = request.POST.get('document', False)
             post.pub_date = timezone.datetime.now()
             post.author = request.user
             post.save()
@@ -25,10 +27,26 @@ def create(request):
 
 
 def home(request):
-    posts = Post.objects.order_by('-pub_date')
+    current_user = request.user
+    posts = Post.objects.all().filter(author=current_user)
     return render(request, 'posts/home.html', {'posts': posts})
 
 
 def post_detail(request, post_id):
     postdetails = get_object_or_404(Post, pk=post_id)
     return render(request, 'posts/post_detail.html', {'post': postdetails})
+
+
+def update(request):
+    if request.method == 'POST':
+        postdetails = get_object_or_404(Post, pk=request.POST.get('post_id'))
+        if request.POST.get('title', False) and request.POST.get('document', False):
+            Post.objects.filter(id=request.POST.get('post_id')).update(
+                title=request.POST.get('title', False),
+                document=request.POST.get('document', False)
+            )
+            return render(request, 'posts/post_detail.html', {'post': postdetails})
+        else:
+            return render(request, 'posts/post_detail.html', {'post': postdetails, 'error': 'Error: Need to fill in all fields'})
+    else:
+        return render(request, 'posts/create.html')
