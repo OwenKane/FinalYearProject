@@ -14,37 +14,37 @@
 
 
     <div class="container">
-    <form method="POST" action="{% url 'posts:update' %}">
-        {% csrf_token %}
+        <form method="POST" action="{% url 'posts:update' %}">
+            {% csrf_token %}
 
-        <input type="hidden" name="post_id" value={{post.id}} >
-
-
-        Tile:
-        <br />
-        <input type="text" name="title" value="{{post.title}}">
-        <br /><br />
+            <input type="hidden" name="post_id" value={{post.id}} >
 
 
-        {% load wysiwyg %}
-        {% wysiwyg_setup %}
+            Tile:
+            <br />
+            <input type="text" name="title" value="{{post.title}}">
+            <br /><br />
 
-        <textarea id="foo" name="document">{{post.document}}</textarea>
 
-        {% wysiwyg_editor "foo" %}
+            {% load wysiwyg %}
+            {% wysiwyg_setup %}
 
-        <br/>
+            <textarea id="foo" name="document">{{post.document}}</textarea>
 
-        Nominated:
-        <br />
-        <input type="text" name="nomuser" value="{{post.nominated}}">
-        <br/><br/>
+            {% wysiwyg_editor "foo" %}
 
-        <button class="btn btn-primary" type="submit" value="Save">
-          <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save
-        </button>
+            <br/>
 
-    </form>
+            Nominated:
+            <br />
+            <input type="text" name="nomuser" value="{{post.nominated}}">
+            <br/><br/>
+
+            <button class="btn btn-primary" type="submit" value="Save">
+              <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save
+            </button>
+
+        </form>
     </div>
 
     {% endblock %}

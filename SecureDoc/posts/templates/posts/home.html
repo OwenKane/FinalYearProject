@@ -10,40 +10,51 @@
 
     {% block content %}
 
-    <h1>Secure Document Sharing</h1>
-    <a input class="btn btn-primary" href="{% url 'posts:create' %}">New Document</a>
+    <div class="container">
+        <h1>Hello {{user}}!</h1>
+        <br/>
+        <a input class="btn btn-primary" href="{% url 'posts:create' %}">New Document</a>
+    </div>
 
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-6">
 
-    <br/><br/>
-    <h3>Your Documents</h3>
-    <br/>
-    <table class="table table-hover">
-        {% for posts in posts.all %}
-        <tr>
-            <td>
-                <a href="{% url 'posts:post_detail' posts.id %}">{{posts.title}}</a>
+                <br/><br/>
+                <h3>Your Documents</h3>
                 <br/>
-                {{posts.pub_date}} by {{posts.author.username}}
-            </td>
-         </tr>
-        {% endfor %}
-    </table>
+                <table class="table table-hover">
+                    {% for posts in posts.all %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'posts:post_detail' posts.id %}">{{posts.title}}</a>
+                            <br/>
+                            {{posts.pub_date}} by {{posts.author.username}}
+                        </td>
+                     </tr>
+                    {% endfor %}
+                </table>
+            </div>
 
+            <div class="col-lg-6">
 
-    <br/><br/>
-    <h3>Documents shared with you</h3>
-    <br/>
-    <table class="table table-hover">
-        {% for shared_posts in shared_posts.all %}
-        <tr>
-            <td>
-                <a href="">{{shared_posts.title}}</a>
+                <br/><br/>
+                <h3>Documents shared with you</h3>
                 <br/>
-                {{shared_posts.pub_date}} by {{shared_posts.author.username}}
-            </td>
-         </tr>
-        {% endfor %}
-    </table>
+                <table class="table table-hover">
+                    {% for shared_posts in shared_posts.all %}
+                    <tr>
+                        <td>
+                            <a href="">{{shared_posts.title}}</a>
+                            <br/>
+                            {{shared_posts.pub_date}} by {{shared_posts.author.username}}
+                        </td>
+                     </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
 
 
     {% endblock %}}
