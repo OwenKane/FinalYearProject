@@ -10,8 +10,6 @@ from .models import Post
 @login_required
 def create(request):
     if request.method == 'POST':
-        print(request.POST.get('title'))
-        print(request.POST.get('document'))
         if request.POST.get('title', False) and request.POST.get('document', False):
             post = Post()
             post.title = request.POST.get('title', False)
@@ -26,9 +24,10 @@ def create(request):
         return render(request, 'posts/create.html')
 
 
+@login_required
 def home(request):
     current_user = request.user
-    posts = Post.objects.all().filter(author=current_user)
+    posts = Post.objects.all().filter(author=current_user).order_by('-pub_date')
     return render(request, 'posts/home.html', {'posts': posts})
 
 
@@ -39,14 +38,15 @@ def post_detail(request, post_id):
 
 def update(request):
     if request.method == 'POST':
-        postdetails = get_object_or_404(Post, pk=request.POST.get('post_id'))
         if request.POST.get('title', False) and request.POST.get('document', False):
             Post.objects.filter(id=request.POST.get('post_id')).update(
                 title=request.POST.get('title', False),
                 document=request.POST.get('document', False)
             )
+            postdetails = get_object_or_404(Post, pk=request.POST.get('post_id'))
             return render(request, 'posts/post_detail.html', {'post': postdetails})
         else:
+            postdetails = get_object_or_404(Post, pk=request.POST.get('post_id'))
             return render(request, 'posts/post_detail.html', {'post': postdetails, 'error': 'Error: Need to fill in all fields'})
     else:
         return render(request, 'posts/create.html')

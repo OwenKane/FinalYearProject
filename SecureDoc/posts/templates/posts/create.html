@@ -19,8 +19,9 @@
     <h1>New Post!</h1>
 
     {%if error %}
-    {{ error }}
-    <br/><br/>
+        <div class="alert alert-danger" role="alert">
+        {{ error }}
+        </div>
     {% endif %}
 
     <form method="POST" action="{% url 'posts:create' %}">
@@ -29,7 +30,7 @@
         Tile:
         <br />
         <input type="text" name="title" />
-        <br />
+        <br /><br />
 
 
         {% load wysiwyg %}
