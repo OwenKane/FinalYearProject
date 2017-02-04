@@ -15,6 +15,7 @@ def create(request):
             post.title = request.POST.get('title', False)
             post.document = request.POST.get('document', False)
             post.pub_date = timezone.datetime.now()
+            post.nominated = request.POST.get('nomuser', False)
             post.author = request.user
             post.save()
             return redirect('home')
@@ -28,7 +29,10 @@ def create(request):
 def home(request):
     current_user = request.user
     posts = Post.objects.all().filter(author=current_user).order_by('-pub_date')
-    return render(request, 'posts/home.html', {'posts': posts})
+
+    shared_posts = Post.objects.all().filter(nominated=current_user).order_by('-pub_date')
+
+    return render(request, 'posts/home.html', {'posts': posts, 'shared_posts': shared_posts})
 
 
 def post_detail(request, post_id):
@@ -41,7 +45,8 @@ def update(request):
         if request.POST.get('title', False) and request.POST.get('document', False):
             Post.objects.filter(id=request.POST.get('post_id')).update(
                 title=request.POST.get('title', False),
-                document=request.POST.get('document', False)
+                document=request.POST.get('document', False),
+                nominated=request.POST.get('nomuser', False)
             )
             postdetails = get_object_or_404(Post, pk=request.POST.get('post_id'))
             return render(request, 'posts/post_detail.html', {'post': postdetails})

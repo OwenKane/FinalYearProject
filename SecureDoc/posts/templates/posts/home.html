@@ -15,7 +15,8 @@
 
 
     <br/><br/>
-
+    <h3>Your Documents</h3>
+    <br/>
     <table class="table table-hover">
         {% for posts in posts.all %}
         <tr>
@@ -23,6 +24,22 @@
                 <a href="{% url 'posts:post_detail' posts.id %}">{{posts.title}}</a>
                 <br/>
                 {{posts.pub_date}} by {{posts.author.username}}
+            </td>
+         </tr>
+        {% endfor %}
+    </table>
+
+
+    <br/><br/>
+    <h3>Documents shared with you</h3>
+    <br/>
+    <table class="table table-hover">
+        {% for shared_posts in shared_posts.all %}
+        <tr>
+            <td>
+                <a href="">{{shared_posts.title}}</a>
+                <br/>
+                {{shared_posts.pub_date}} by {{shared_posts.author.username}}
             </td>
          </tr>
         {% endfor %}
