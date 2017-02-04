@@ -14,16 +14,19 @@
     <a input class="btn btn-primary" href="{% url 'posts:create' %}">New Document</a>
 
 
-    <br/>
-    <br/>
-
-
-    {% for posts in posts.all %}
-    <a href="{% url 'posts:post_detail' posts.id %}">{{posts.title}}</a>
-    <br/>
-    {{posts.pub_date}} by {{posts.author.username}}
     <br/><br/>
-    {% endfor %}
+
+    <table class="table table-hover">
+        {% for posts in posts.all %}
+        <tr>
+            <td>
+                <a href="{% url 'posts:post_detail' posts.id %}">{{posts.title}}</a>
+                <br/>
+                {{posts.pub_date}} by {{posts.author.username}}
+            </td>
+         </tr>
+        {% endfor %}
+    </table>
 
 
     {% endblock %}}
