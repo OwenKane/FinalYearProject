@@ -45,7 +45,7 @@
                     {% for shared_posts in shared_posts.all %}
                     <tr>
                         <td>
-                            <a href="">{{shared_posts.title}}</a>
+                            <a href="{% url 'posts:view' shared_posts.id %}">{{shared_posts.title}}</a>
                             <br/>
                             {{shared_posts.pub_date}} by {{shared_posts.author.username}}
                         </td>

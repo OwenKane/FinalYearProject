@@ -29,9 +29,7 @@ def create(request):
 def home(request):
     current_user = request.user
     posts = Post.objects.all().filter(author=current_user).order_by('-pub_date')
-
     shared_posts = Post.objects.all().filter(nominated=current_user).order_by('-pub_date')
-
     return render(request, 'posts/home.html', {'posts': posts, 'shared_posts': shared_posts})
 
 
@@ -52,6 +50,12 @@ def update(request):
             return render(request, 'posts/post_detail.html', {'post': postdetails})
         else:
             postdetails = get_object_or_404(Post, pk=request.POST.get('post_id'))
-            return render(request, 'posts/post_detail.html', {'post': postdetails, 'error': 'Error: Need to fill in all fields'})
+            return render(request, 'posts/post_detail.html',
+                          {'post': postdetails, 'error': 'Error: Need to fill in all fields'})
     else:
         return render(request, 'posts/create.html')
+
+
+def view(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    return render(request, 'posts/view.html', {'post': post})

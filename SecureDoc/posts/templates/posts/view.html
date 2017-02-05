@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type='text/javascript' src="/static/js/doc.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/doc.css">
+    <meta charset="UTF-8">
+    <title>View</title>
+</head>
+<body>
+
+    {% extends 'base.html' %}
+
+    {% block content %}
+
+
+    <div class="container">
+        <form method="POST" action="">
+            {% csrf_token %}
+
+            <input type="hidden" name="post_id" value={{post.id}} >
+
+
+            Tile:
+            <br />
+            <input readonly type="text" name="title" value="{{post.title}}">
+            <br /><br />
+
+
+            {% load wysiwyg %}
+            {% wysiwyg_setup %}
+
+            <textarea readonly id="foo" name="document">{{post.document}}</textarea>
+
+            {% wysiwyg_editor "foo" %}
+
+            <br/>
+
+            Nominated:
+            <br />
+            <input readonly type="text" name="nomuser" value="{{post.nominated}}">
+            <br/><br/>
+
+            <button class="btn btn-primary" type="submit" value="Save">
+              <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save
+            </button>
+
+        </form>
+    </div>
+
+    {% endblock %}
+</body>
+</html>
