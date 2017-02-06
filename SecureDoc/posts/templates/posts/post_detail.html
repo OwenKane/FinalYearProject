@@ -34,10 +34,25 @@
 
             <br/>
 
-            Nominated:
-            <br />
-            <input type="text" name="nomuser" value="{{post.nominated}}">
-            <br/><br/>
+            <div class="row">
+                <div class="col-md-9 col-md-push-3">
+                    Sharing Option:
+                    <br/>
+                    <div class="btn-group" data-toggle="buttons">
+                      <label class="btn btn-primary active">
+                        <input type="radio" name="view_only" id="view_only" autocomplete="off" checked> View Only
+                      </label>
+                      <label class="btn btn-primary">
+                        <input type="radio" name="edit" id="edit" autocomplete="off"> Ability to Edit
+                      </label>
+                    </div>
+                </div>
+                <div class="col-md-3 col-md-pull-9">
+                    Nominate User:
+                    <br />
+                    <input type="text" name="nomuser" />
+                </div>
+            </div>
 
             <button class="btn btn-primary" type="submit" value="Save">
               <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save
