@@ -3,6 +3,7 @@
 <head>
     <script type='text/javascript' src="/static/js/doc.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/css/doc.css">
+     <link rel="stylesheet" type="text/css" href="/static/css/post_detail.css">
     <meta charset="UTF-8">
     <title>Post Detail</title>
 </head>
@@ -20,10 +21,8 @@
             <input type="hidden" name="post_id" value={{post.id}} >
 
 
-            Tile:
+            <h3><input id="title" type="text" name="title" value="{{post.title}}"></h3>
             <br />
-            <input type="text" name="title" value="{{post.title}}">
-            <br /><br />
 
 
             {% load wysiwyg %}

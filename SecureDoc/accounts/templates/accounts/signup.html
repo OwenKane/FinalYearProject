@@ -11,33 +11,43 @@
 
     {% block content %}
 
-    <h1>Sign Up!</h1>
 
-    {%if error %}
-        <div class="alert alert-danger" role="alert">
-        {{ error }}
+
+
+    <div class="container container-table">
+        <div class="row vertical-center-row">
+            <div class="text-center col-md-4 col-md-offset-4" >
+                <h1>Sign Up!</h1>
+
+                {%if error %}
+                    <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                    </div>
+                {% endif %}
+
+                <form method="post" action="{% url 'accounts:signup' %}">
+                    {% csrf_token %}
+
+                    <br />
+                    <input type="text" name="username" placeholder="Username" class="form-control"/>
+                    <br />
+
+                    <br />
+                    <input type="password" name="password1" placeholder="Password" class="form-control"/>
+                    <br />
+
+                    <br />
+                    <input type="password" name="password2" placeholder="Confirm Password" class="form-control"/>
+                    <br /><br/>
+
+                    <input input class="btn btn-primary  btn-lg btn-full" type="submit" value="SignUp" >
+                </form>
+            </div>
         </div>
-    {% endif %}
+    </div>
 
-    <form method="post" action="{% url 'accounts:signup' %}">
-        {% csrf_token %}
-        Username:
-        <br />
-        <input type="text" name="username" />
-        <br />
 
-        Password:
-        <br />
-        <input type="password" name="password1" />
-        <br />
 
-        Confirm Password:
-        <br />
-        <input type="password" name="password2" />
-        <br /><br/>
-
-        <input input class="btn btn-primary" type="submit" value="SignUp">
-    </form>
 
     {% endblock %}
 
