@@ -27,7 +27,15 @@
             {% load wysiwyg %}
             {% wysiwyg_setup %}
 
-            <textarea readonly id="foo" name="document">{{post.document}}</textarea>
+
+            {%if post.edit_options %}
+                <textarea id="foo" name="document">{{post.document}}</textarea>
+            {% endif %}
+
+            {%if post.edit_options == False %}
+                <textarea readonly id="foo" name="document">{{post.document}}</textarea>
+            {% endif %}
+
 
             {% wysiwyg_editor "foo" %}
 

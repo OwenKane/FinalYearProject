@@ -17,6 +17,7 @@ def create(request):
             post.pub_date = timezone.datetime.now()
             post.nominated = request.POST.get('nomuser', False)
             post.author = request.user
+            post.edit_options = request.POST['edit_option']
             post.save()
             return redirect('home')
         else:
