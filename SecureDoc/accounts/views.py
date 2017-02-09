@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
@@ -12,9 +12,13 @@ def signup(request):
                 User.objects.get(username=request.POST['username'])
                 return render(request, 'accounts/signup.html', {'error': 'User name has been taken'})
             except User.DoesNotExist:
-                user = User.objects.create_user(request.POST['username'], password=request.POST['password1'])
+                user = User.objects.create_user(request.POST['username'],
+                                                password=request.POST['password1'],
+                                                email=request.POST['email'],
+                                                first_name=request.POST['fname'],
+                                                last_name=request.POST['lname'])
                 login(request, user)
-                return render(request, 'accounts/signup.html')
+                return redirect('home')
         else:
             return render(request, 'accounts/signup.html', {'error': 'Passwords didn\'t match'})
     else:
@@ -39,3 +43,7 @@ def logoutview(request):
     if request.method == 'POST':
         logout(request)
         return redirect('home')
+
+
+def profile(request):
+    return render(request, 'accounts/profile.html')

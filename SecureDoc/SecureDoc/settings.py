@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'lists',
     'accounts',
     'posts',
+    'friends',
     'django_wysiwyg',
     'ckeditor',
     'ckeditor_uploader',
