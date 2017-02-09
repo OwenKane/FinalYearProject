@@ -10,7 +10,17 @@
 
     {% block content %}
 
-    <h1>View Friends</h1>
+        <h1>View Friends</h1>
+
+        <table class="table table-hover">
+            {% for friends in friends.all %}
+                <tr>
+                    <td>
+                        <a href="">{{friends.username}}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
 
 
     {% endblock %}

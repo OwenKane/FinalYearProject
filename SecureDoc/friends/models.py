@@ -9,4 +9,4 @@ class Friend(models.Model):
     friend_id = models.IntegerField()
 
     def __str__(self):
-        return self.id
+        return str(self.id)
