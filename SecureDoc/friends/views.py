@@ -5,5 +5,5 @@ from .models import Friend
 
 # Create your views here.
 @login_required
-def home(request):
-    return render(request, 'posts/home.html')
+def view_friends(request):
+    return render(request, 'friends/view_friends.html')

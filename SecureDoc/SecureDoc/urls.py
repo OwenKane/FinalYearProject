@@ -26,5 +26,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.home, name="home"),
     url(r'^accounts/', include('accounts.urls')),
+    url(r'^friends/', include('friends.urls')),
     url(r'^posts/', include('posts.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
