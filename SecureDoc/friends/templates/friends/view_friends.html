@@ -13,10 +13,10 @@
         <h1>View Friends</h1>
 
         <table class="table table-hover">
-            {% for friends in friends.all %}
+            {% for user in users %}
                 <tr>
                     <td>
-                        <a href="">{{friends.username}}</a>
+                        <a href="">{{user.first.username}}</a>
                     </td>
                 </tr>
             {% endfor %}
