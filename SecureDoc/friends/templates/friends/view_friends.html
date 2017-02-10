@@ -10,18 +10,78 @@
 
     {% block content %}
 
-        <h1>View Friends</h1>
+        <div class="container">
+            <h1>Friends</h1>
+        </div>
+        <br/>
 
-        <table class="table table-hover">
-            {% for user in users %}
-                <tr>
-                    <td>
-                        <a href="">{{user.first.username}}</a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
+        <div class="row">
+          <div class="col-md-4">
+              <h3>Your friends</h3>
+              <table class="table table-hover">
+                  {% for user in users %}
+                      <tr>
+                          <td>{{user.first.username}}</td>
+                          <td class="text-right"><button type="button" class="btn btn-danger">Delete</button></td>
+                      </tr>
+                  {% endfor %}
+              </table>
+          </div>
+          <div class="col-md-4">
+              <h3>Friend Requests</h3>
+              <table class="table table-hover">
+                  {% for user in users %}
+                      <tr>
+                          <td>{{user.first.username}}</td>
+                          <td class="text-right"><button type="button" class="btn btn-success">Accept</button></td>
+                          <td class="text-right"><button type="button" class="btn btn-danger">Decline</button></td>
+                      </tr>
+                  {% endfor %}
+              </table>
+          </div>
+          <div class="col-md-4">
+              <h3>Add friends</h3>
+              <form class="form-inline">
+                  <div class="form-group">
+                    <label class="sr-only" for="exampleInputEmail3">Username</label>
+                    <input type="email" class="form-control" id="exampleInputEmail3" placeholder="username">
+                  </div>
+                  <button type="submit" class="btn btn-default">Send Request</button>
+                </form>
+          </div>
+        </div>
 
+        <!--
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h3>Your friends</h3>
+                    <table class="table table-hover">
+                        {% for user in users %}
+                            <tr>
+                                <td>{{user.first.username}}</td>
+                                <td><button type="button" class="btn btn-danger">Delete</button></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+
+                <div class="col-lg-6">
+                    <h3>Add friends</h3>
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <label class="sr-only">Email</label>
+                            <p class="form-control-static">Friend's username</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword2" class="sr-only">Password</label>
+                            <input type="password" class="form-control" id="inputPassword2" placeholder="Password">
+                        </div>
+                        <button type="submit" class="btn btn-default">Confirm identity</button>
+                    </form>
+                </div>
+            </div>
+        </div> -->
 
     {% endblock %}
 </body>
