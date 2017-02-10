@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 class Friend(models.Model):
     user_id = models.IntegerField()
     friend_id = models.IntegerField()
+    pending = models.BooleanField(default=True)
 
     def __str__(self):
         return str(self.id)
