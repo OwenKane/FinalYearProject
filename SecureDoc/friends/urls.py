@@ -10,4 +10,5 @@ urlpatterns = [
     url(r'^delete_friend/', views.delete_friend, name="delete_friend"),
     url(r'^confirm_friend/', views.confirm_friend, name="confirm_friend"),
     url(r'^deny_friend/', views.deny_friend, name="deny_friend"),
+    url(r'^add_friend/', views.add_friend, name="add_friend"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
