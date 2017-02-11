@@ -19,28 +19,43 @@
               <h3>Your friends</h3>
               <table class="table table-hover">
                   {% for user in users %}
-                      <tr>
-                          <td>{{user.first.username}}</td>
-                          <td class="text-right"><button type="button" class="btn btn-danger">Delete</button></td>
-                      </tr>
+                      <form method="post" action="{% url 'friends:delete_friend' %}" name="remove_friend">
+                       {% csrf_token %}
+                          <tr>
+                              <input type="hidden" name="rm_friend_id" value={{ user.first.id }} >
+                              <td>{{user.first.username}}</td>
+                              <td class="text-right"><button type="submit" class="btn btn-danger">Delete</button></td>
+                          </tr>
+                      </form>
                   {% endfor %}
               </table>
           </div>
           <div class="col-md-4">
               <h3>Friend Requests</h3>
-              <table class="table table-hover">
-                  {% for req in friend_req %}
-                      <tr>
-                          <td>{{req.first.username}}</td>
-                          <td class="text-right"><button type="button" class="btn btn-success">Accept</button></td>
-                          <td class="text-right"><button type="button" class="btn btn-danger">Decline</button></td>
-                      </tr>
-                  {% endfor %}
-              </table>
+                  <table class="table table-hover">
+                      {% for req in friend_req %}
+                          <tr>
+                              <td>{{req.first.username}}</td>
+                              <form method="post" action="{% url 'friends:confirm_friend' %}" name="friend_request">
+                                  {% csrf_token %}
+                                  <input type="hidden" name="req_friend_id" value={{ req.first.id }} >
+                                  <td class="text-right"><button type="submit" class="btn btn-success">Accept</button></td>
+                              </form>
+
+                              <form method="post" action="{% url 'friends:deny_friend' %}" name="friend_request">
+                                  {% csrf_token %}
+                                  <input type="hidden" name="req_friend_id" value={{ req.first.id }} >
+                                  <td class="text-right"><button type="submit" class="btn btn-danger">Decline</button></td>
+                              </form>
+                          </tr>
+                      {% endfor %}
+                  </table>
+                </form>
           </div>
           <div class="col-md-4">
               <h3>Add friends</h3>
-              <form class="form-inline">
+              <form class="form-inline" name="add_friend">
+                   {% csrf_token %}
                   <div class="form-group">
                     <label class="sr-only" for="exampleInputEmail3">Username</label>
                     <input type="username" class="form-control" id="exampleInputEmail3" placeholder="username">
@@ -49,38 +64,6 @@
                 </form>
           </div>
         </div>
-
-        <!--
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-6">
-                    <h3>Your friends</h3>
-                    <table class="table table-hover">
-                        {% for user in users %}
-                            <tr>
-                                <td>{{user.first.username}}</td>
-                                <td><button type="button" class="btn btn-danger">Delete</button></td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-
-                <div class="col-lg-6">
-                    <h3>Add friends</h3>
-                    <form class="form-inline">
-                        <div class="form-group">
-                            <label class="sr-only">Email</label>
-                            <p class="form-control-static">Friend's username</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputPassword2" class="sr-only">Password</label>
-                            <input type="password" class="form-control" id="inputPassword2" placeholder="Password">
-                        </div>
-                        <button type="submit" class="btn btn-default">Confirm identity</button>
-                    </form>
-                </div>
-            </div>
-        </div> -->
 
     {% endblock %}
 </body>
