@@ -20,16 +20,27 @@ def delete_friend(request):
 
 
 def get_friend_info(request):
+    users = get_friends(request)
+    friend_req = get_requests(request)
+    return users, friend_req
+
+
+def get_requests(request):
     current_user = request.user
-    friend_id = Friend.objects.filter(user_id=current_user.id, pending=False)
-    friend_req_id = Friend.objects.filter(user_id=current_user.id, pending=True)
-    users = []
+    friend_req_id = Friend.objects.filter(friend_id=current_user.id, pending=True)
     friend_req = []
-    for f in friend_id:
-        users.append(User.objects.filter(id=f.friend_id).values('username', 'id'))
     for r in friend_req_id:
         friend_req.append(User.objects.filter(id=r.friend_id).values('username', 'id'))
-    return users, friend_req
+    return friend_req
+
+
+def get_friends(request):
+    current_user = request.user
+    users = []
+    friend_id = Friend.objects.filter(user_id=current_user.id, pending=False)
+    for f in friend_id:
+        users.append(User.objects.filter(id=f.friend_id).values('username', 'id'))
+    return users
 
 
 def confirm_friend(request):
