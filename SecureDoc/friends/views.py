@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Friend
 from .models import User
+from django.db.models import Q
 
 
 # Create your views here.
@@ -27,26 +28,35 @@ def get_friend_info(request):
 
 def get_requests(request):
     current_user = request.user
-    friend_req_id = Friend.objects.filter(friend_id=current_user.id, pending=True)
+    friend_req_id = Friend.objects.filter(
+        Q(pending=True),
+        Q(friend_id=current_user.id)
+    ).distinct()
     friend_req = []
-    for r in friend_req_id:
-        friend_req.append(User.objects.filter(id=r.friend_id).values('username', 'id'))
+    for req in friend_req_id:
+        friend_req.append(User.objects.filter(id=req.user_id).values('username', 'id'))
     return friend_req
 
 
 def get_friends(request):
     current_user = request.user
     users = []
-    friend_id = Friend.objects.filter(user_id=current_user.id, pending=False)
+    friend_id = Friend.objects.filter(
+        Q(pending=False),
+        Q(user_id=current_user.id) | Q(friend_id=current_user.id)
+    ).distinct()
     for f in friend_id:
-        users.append(User.objects.filter(id=f.friend_id).values('username', 'id'))
+        if (User.objects.get(id=f.friend_id)).username == current_user.username:
+            users.append(User.objects.filter(id=f.user_id).values('username', 'id'))
+        else:
+            users.append(User.objects.filter(id=f.friend_id).values('username', 'id'))
     return users
 
 
 def confirm_friend(request):
     current_user = request.user
-    req_friend = request.POST['req_friend_id']
-    Friend.objects.filter(friend_id=req_friend).filter(user_id=current_user.id).update(pending=False)
+    sender_id = request.POST['req_friend_id']
+    Friend.objects.filter(user_id=sender_id).filter(friend_id=current_user.id).update(pending=False)
     users, friend_req = get_friend_info(request)
     return render(request, 'friends/view_friends.html', {'users': users, 'friend_req': friend_req})
 
