@@ -55,9 +55,18 @@
                 </div>
             </div>
             <div class="col-md-3 col-md-pull-9">
-                Nominate User:
-                <br />
-                <input type="text" name="nomuser" />
+                <table class="table table-hover">
+                  {% for user in users %}
+                      <form method="post" action="" name="share_with">
+                       {% csrf_token %}
+                          <tr>
+                              <input type="hidden" name="friend_id" value={{ user.first.id }} >
+                              <td>{{user.first.username}}</td>
+                              <td class="text-right"><button type="submit" class="btn btn-success">Share With</button></td>
+                          </tr>
+                      </form>
+                  {% endfor %}
+              </table>
             </div>
         </div>
 
@@ -67,6 +76,7 @@
         </button>
 
     </form>
+
 
 
     {% endblock %}
