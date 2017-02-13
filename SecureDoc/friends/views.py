@@ -15,8 +15,12 @@ def view_friends(request):
 def delete_friend(request):
     current_user = request.user
     del_user = request.POST['rm_friend_id']
-    Friend.objects.filter(friend_id=del_user).filter(user_id=current_user.id).delete()
+    if User.objects.get(id=del_user).username == current_user.username:
+        Friend.objects.filter(friend_id=del_user).filter(user_id=current_user.id).delete()
+    else:
+        Friend.objects.filter(friend_id=current_user.id).filter(user_id=del_user).delete()
     users, friend_req = get_friend_info(request)
+    print(User.objects.get(id=del_user).username)
     return render(request, 'friends/view_friends.html', {'users': users, 'friend_req': friend_req})
 
 
