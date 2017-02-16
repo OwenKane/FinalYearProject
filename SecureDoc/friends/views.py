@@ -81,6 +81,6 @@ def add_friend(request):
         f = Friend(user_id=current_user.id, friend_id=id_to_add, pending=True)
         f.save()
     except User.DoesNotExist:
-        id_to_add = None
+        error = "User doesn't exist"
     users, friend_req = get_friend_info(request)
-    return render(request, 'friends/view_friends.html', {'users': users, 'friend_req': friend_req})
+    return render(request, 'friends/view_friends.html', {'users': users, 'friend_req': friend_req, 'error': error})

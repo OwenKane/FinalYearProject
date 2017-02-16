@@ -82,7 +82,6 @@ def update(request):
             Post.objects.filter(id=request.POST.get('post_id')).update(
                 title=request.POST.get('title', False),
                 document=request.POST.get('document', False),
-                # nominated=request.POST.get('nomuser', False)
             )
             postdetails = get_object_or_404(Post, pk=request.POST.get('post_id'))
             return render(request, 'posts/post_detail.html', {'post': postdetails})
