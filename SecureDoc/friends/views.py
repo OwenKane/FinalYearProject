@@ -76,9 +76,11 @@ def deny_friend(request):
 def add_friend(request):
     current_user = request.user
     usern = request.POST['username']
-    id_to_add = User.objects.get(username=usern).pk
-    print(id_to_add)
-    f = Friend(user_id=current_user.id, friend_id=id_to_add, pending=True)
-    f.save()
+    try:
+        id_to_add = User.objects.get(username=usern).pk
+        f = Friend(user_id=current_user.id, friend_id=id_to_add, pending=True)
+        f.save()
+    except User.DoesNotExist:
+        id_to_add = None
     users, friend_req = get_friend_info(request)
     return render(request, 'friends/view_friends.html', {'users': users, 'friend_req': friend_req})
