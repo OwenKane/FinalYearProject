@@ -104,7 +104,6 @@ def update(request):
 def view(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     edit_ability = ShareWith.objects.filter(doc_id=post_id, nominated_user=request.user.username)
-    print(edit_ability[0].edit_options)
     return render(request, 'posts/view.html', {'post': post, 'edit_ability': edit_ability})
 
 
