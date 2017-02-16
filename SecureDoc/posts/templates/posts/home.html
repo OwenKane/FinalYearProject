@@ -41,12 +41,12 @@
                 <h3>Documents shared with you</h3>
                 <br/>
                 <table class="table table-hover">
-                    {% for shared_posts in shared_posts.all %}
+                    {% for shared_posts in s_posts %}
                     <tr>
                         <td>
-                            <a href="{% url 'posts:view' shared_posts.id %}">{{shared_posts.title}}</a>
+                            <a href="">{{ shared_posts.0.title }}</a>
                             <br/>
-                            {{shared_posts.pub_date}} by {{shared_posts.author.username}}
+                            By {{shared_posts.0.author}}  -  {{ shared_posts.0.pub_date }}
                         </td>
                      </tr>
                     {% endfor %}

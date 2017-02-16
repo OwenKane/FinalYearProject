@@ -34,9 +34,14 @@ def create(request):
 def home(request):
     current_user = request.user
     posts = Post.objects.all().filter(author=current_user).order_by('-pub_date')
-    # shared_posts = Post.objects.all().filter(nominated=current_user).order_by('-pub_date')
-    shared_posts = Post.objects.all()
-    return render(request, 'posts/home.html', {'posts': posts, 'shared_posts': shared_posts})
+    s_posts = []
+    try:
+        shared_posts = ShareWith.objects.filter(nominated_user=current_user.username)
+    except ShareWith.DoesNotExist:
+        shared_posts = None
+    for sp in shared_posts:
+        s_posts.append(Post.objects.all().filter(id=sp.doc_id))
+    return render(request, 'posts/home.html', {'posts': posts, 's_posts': s_posts})
 
 
 def post_detail(request, post_id):
