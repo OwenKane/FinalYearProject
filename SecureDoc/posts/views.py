@@ -24,7 +24,8 @@ def create(request):
             post.save()
             return redirect('home')
         else:
-            return render(request, 'posts/create.html', {'error': 'Error: Need to fill in all fields'})
+            users = get_friends(request)
+            return render(request, 'posts/create.html', {'error': 'Error: Need to fill in all fields', 'users': users})
     else:
         users = get_friends(request)
         return render(request, 'posts/create.html', {'users': users})
@@ -52,6 +53,7 @@ def post_detail(request, post_id):
 
 def share_editing(request):
     post_id = request.POST['post_id_to_share']
+    delete_dup(request, post_id)
     share_with = ShareWith()
     share_with.doc_id = post_id
     share_with.author = request.POST['post_author']
@@ -65,6 +67,7 @@ def share_editing(request):
 
 def share_viewing(request):
     post_id = request.POST['post_id_to_share']
+    delete_dup(request, post_id)
     share_with = ShareWith()
     share_with.doc_id = post_id
     share_with.author = request.POST['post_author']
@@ -74,6 +77,11 @@ def share_viewing(request):
     postdetails = get_object_or_404(Post, pk=post_id)
     users = get_friends(request)
     return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users})
+
+
+def delete_dup(request, post_id):
+    if ShareWith.objects.filter(doc_id=post_id, author=request.user.username).exists():
+        ShareWith.objects.filter(doc_id=post_id, author=request.user.username).delete()
 
 
 def update(request):
@@ -95,7 +103,9 @@ def update(request):
 
 def view(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
-    return render(request, 'posts/view.html', {'post': post})
+    edit_ability = ShareWith.objects.filter(doc_id=post_id, nominated_user=request.user.username)
+    print(edit_ability[0].edit_options)
+    return render(request, 'posts/view.html', {'post': post, 'edit_ability': edit_ability})
 
 
 def get_friends(request):

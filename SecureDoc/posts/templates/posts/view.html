@@ -28,11 +28,11 @@
             {% wysiwyg_setup %}
 
 
-            {%if post.edit_options %}
+            {%if edit_ability.0.edit_options %}
                 <textarea id="foo" name="document">{{post.document}}</textarea>
             {% endif %}
 
-            {%if post.edit_options == False %}
+            {%if edit_ability.0.edit_options == False %}
                 <textarea readonly id="foo" name="document">{{post.document}}</textarea>
             {% endif %}
 
