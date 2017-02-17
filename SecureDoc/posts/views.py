@@ -20,7 +20,6 @@ def create(request):
             post.document = request.POST.get('document', False)
             post.pub_date = timezone.datetime.now()
             post.author = request.user
-            post.edit_options = request.POST['edit_option']
             post.save()
             return redirect('home')
         else:
@@ -37,16 +36,18 @@ def home(request):
     posts = Post.objects.all().filter(author=current_user).order_by('-pub_date')
     s_posts = []
     try:
-        shared_posts = ShareWith.objects.filter(nominated_user=current_user.username)
+        shared_posts = ShareWith.objects.filter(nominated_user=request.user)
     except ShareWith.DoesNotExist:
         shared_posts = None
     for sp in shared_posts:
-        s_posts.append(Post.objects.all().filter(id=sp.doc_id))
+        s_posts.append(Post.objects.all().filter(id=sp.post.id))
     return render(request, 'posts/home.html', {'posts': posts, 's_posts': s_posts})
 
 
 def post_detail(request, post_id):
     postdetails = get_object_or_404(Post, pk=post_id)
+    print(postdetails.author)
+    print(postdetails.author.id)
     users = get_friends(request)
     return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users})
 
@@ -55,9 +56,9 @@ def share_editing(request):
     post_id = request.POST['post_id_to_share']
     delete_dup(request, post_id)
     share_with = ShareWith()
-    share_with.doc_id = post_id
-    share_with.author = request.POST['post_author']
-    share_with.nominated_user = request.POST['friend_username']
+    share_with.post = Post.objects.get(id=post_id)
+    share_with.author = request.user
+    share_with.nominated_user = User.objects.get(username=request.POST['friend_username'])  # This can 404?
     share_with.edit_options = True
     share_with.save()
     postdetails = get_object_or_404(Post, pk=post_id)
@@ -69,9 +70,9 @@ def share_viewing(request):
     post_id = request.POST['post_id_to_share']
     delete_dup(request, post_id)
     share_with = ShareWith()
-    share_with.doc_id = post_id
-    share_with.author = request.POST['post_author']
-    share_with.nominated_user = request.POST['friend_username']
+    share_with.post = Post.objects.get(id=post_id)
+    share_with.author = request.user
+    share_with.nominated_user = User.objects.get(username=request.POST['friend_username'])  # This can 404?
     share_with.edit_options = False
     share_with.save()
     postdetails = get_object_or_404(Post, pk=post_id)
@@ -80,8 +81,8 @@ def share_viewing(request):
 
 
 def delete_dup(request, post_id):
-    if ShareWith.objects.filter(doc_id=post_id, author=request.user.username).exists():
-        ShareWith.objects.filter(doc_id=post_id, author=request.user.username).delete()
+    if ShareWith.objects.filter(post=(Post.objects.get(id=post_id)), author=request.user).exists():
+        ShareWith.objects.filter(post=(Post.objects.get(id=post_id)), author=request.user).delete()
 
 
 def update(request):
@@ -103,7 +104,8 @@ def update(request):
 
 def view(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
-    edit_ability = ShareWith.objects.filter(doc_id=post_id, nominated_user=request.user.username)
+    edit_ability = ShareWith.objects.filter(post=post, nominated_user=request.user)
+    print(edit_ability[0].edit_options)
     return render(request, 'posts/view.html', {'post': post, 'edit_ability': edit_ability})
 
 
