@@ -14,13 +14,11 @@ def view_friends(request):
 
 def delete_friend(request):
     current_user = request.user
-    del_user = request.POST['rm_friend_id']
-    if User.objects.get(id=del_user).username == current_user.username:
-        Friend.objects.filter(friend_id=del_user).filter(user_id=current_user.id).delete()
-    else:
-        Friend.objects.filter(friend_id=current_user.id).filter(user_id=del_user).delete()
+    del_id = request.POST['rm_friend_id']
+    del_user = User.objects.get(id=del_id)
+    Friend.objects.filter(friend=del_user).filter(user=current_user).delete()
+    Friend.objects.filter(friend=current_user).filter(user=del_user).delete()
     users, friend_req = get_friend_info(request)
-    print(User.objects.get(id=del_user).username)
     return render(request, 'friends/view_friends.html', {'users': users, 'friend_req': friend_req})
 
 
@@ -34,11 +32,11 @@ def get_requests(request):
     current_user = request.user
     friend_req_id = Friend.objects.filter(
         Q(pending=True),
-        Q(friend_id=current_user.id)
+        Q(friend=current_user)
     ).distinct()
     friend_req = []
     for req in friend_req_id:
-        friend_req.append(User.objects.filter(id=req.user_id).values('username', 'id'))
+        friend_req.append(User.objects.filter(id=req.user.id).values('username', 'id'))
     return friend_req
 
 
@@ -47,20 +45,20 @@ def get_friends(request):
     users = []
     friend_id = Friend.objects.filter(
         Q(pending=False),
-        Q(user_id=current_user.id) | Q(friend_id=current_user.id)
+        Q(user=current_user) | Q(friend=current_user)
     ).distinct()
     for f in friend_id:
-        if (User.objects.get(id=f.friend_id)).username == current_user.username:
-            users.append(User.objects.filter(id=f.user_id).values('username', 'id'))
+        if (User.objects.get(id=f.friend.id)).username == current_user.username:
+            users.append(User.objects.filter(id=f.user.id).values('username', 'id'))
         else:
-            users.append(User.objects.filter(id=f.friend_id).values('username', 'id'))
+            users.append(User.objects.filter(id=f.friend.id).values('username', 'id'))
     return users
 
 
 def confirm_friend(request):
     current_user = request.user
     sender_id = request.POST['req_friend_id']
-    Friend.objects.filter(user_id=sender_id).filter(friend_id=current_user.id).update(pending=False)
+    Friend.objects.filter(user=(User.objects.get(id=sender_id))).filter(friend=current_user).update(pending=False)
     users, friend_req = get_friend_info(request)
     return render(request, 'friends/view_friends.html', {'users': users, 'friend_req': friend_req})
 
@@ -68,17 +66,18 @@ def confirm_friend(request):
 def deny_friend(request):
     current_user = request.user
     del_user = request.POST['req_friend_id']
-    Friend.objects.filter(friend_id=del_user).filter(user_id=current_user.id).delete()
+    Friend.objects.filter(friend_id=(User.objects.get(id=del_user))).filter(user_id=current_user).delete()
     users, friend_req = get_friend_info(request)
     return render(request, 'friends/view_friends.html', {'users': users, 'friend_req': friend_req})
 
 
 def add_friend(request):
     current_user = request.user
+    error = None
     usern = request.POST['username']
     try:
-        id_to_add = User.objects.get(username=usern).pk
-        f = Friend(user_id=current_user.id, friend_id=id_to_add, pending=True)
+        friend_to_add = User.objects.get(username=usern)
+        f = Friend(user=current_user, friend=friend_to_add, pending=True)
         f.save()
     except User.DoesNotExist:
         error = "User doesn't exist"
