@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <script type='text/javascript' src="/static/js/doc.js"></script>
+    <script type='text/javascript' src="/static/js/aes.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/css/doc.css">
      <link rel="stylesheet" type="text/css" href="/static/css/post_detail.css">
     <meta charset="UTF-8">
@@ -12,7 +13,6 @@
     {% extends 'base.html' %}
 
     {% block content %}
-
 
     <div class="container">
         <form method="POST" action="{% url 'posts:update' %}">
@@ -28,11 +28,15 @@
             {% load wysiwyg %}
             {% wysiwyg_setup %}
 
-            <textarea id="foo" name="document">{{post.document}}</textarea>
+            <textarea id="foo" name="document"></textarea>
 
             {% wysiwyg_editor "foo" %}
 
+
             <br/>
+
+            <textarea id="bar" name="bar"></textarea> <br>
+
 
             <button class="btn btn-primary" type="submit" value="Save">
               <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save
@@ -70,6 +74,22 @@
             </div>
         </div>
     </div>
+
+        <script type="text/javascript">
+            var doc = "{{post.document|escapejs}}";
+            document.getElementById("foo").value = doc;
+
+            var key = CryptoJS.enc.Base64.parse("#base64Key#");
+			var iv  = CryptoJS.enc.Base64.parse("#base64IV#");
+
+			var encrypted = CryptoJS.AES.encrypt(doc, key, {iv: iv});
+			console.log(encrypted.toString());
+
+			var decrypted = CryptoJS.AES.decrypt(encrypted, key, {iv: iv});
+			console.log(decrypted.toString(CryptoJS.enc.Utf8));
+        </script>
+
+
 
     {% endblock %}
 </body>

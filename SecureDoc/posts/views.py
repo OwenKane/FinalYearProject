@@ -33,6 +33,8 @@ def create(request):
 @login_required
 def home(request):
     current_user = request.user
+    print("Salt is")
+    print(current_user.password)
     posts = Post.objects.all().filter(author=current_user).order_by('-pub_date')
     s_posts = []
     try:
