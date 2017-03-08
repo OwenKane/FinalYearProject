@@ -20,3 +20,9 @@ class ShareWith(models.Model):
     author = models.ForeignKey(User, related_name="%(class)s_Author_of_doc")
     nominated_user = models.ForeignKey(User, related_name="Nominated_user")
     edit_options = models.BooleanField(default=False)
+
+
+class Keys(models.Model):
+    post = models.ForeignKey(Post, related_name="%(class)s_to_doc", null=True)
+    author = models.ForeignKey(User, related_name="%(class)s_Author_of_doc")
+    key = models.TextField()

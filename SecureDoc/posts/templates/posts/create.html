@@ -7,6 +7,8 @@
     <script type="text/javascript" src="/static/ckeditor/ckeditor-init.js"></script>
 
     <script type='text/javascript' src="/static/js/doc.js"></script>
+    <script type='text/javascript' src="/static/js/aes.js"></script>
+
     <link rel="stylesheet" type="text/css" href="/static/css/doc.css">
     <meta charset="UTF-8">
     <title>New Post</title>
@@ -27,7 +29,7 @@
     <form method="POST" action="{% url 'posts:create' %}">
         {% csrf_token %}
 
-        <input type="text" name="title" placeholder="Tile" />
+        <input type="text" name="title" placeholder="Title" />
         <br /><br />
 
 
@@ -35,21 +37,39 @@
         {% wysiwyg_setup %}
 
         <textarea id="foo" name="document"></textarea>
+        <input type="hidden" name="test" id="test">
 
         {% wysiwyg_editor "foo" %}
 
         <br/>
 
         <br/><br/>
-        <button class="btn btn-primary" type="submit" value="Save">
+        <button class="btn btn-primary" type="submit" value="Save" onclick="encrypt()">
             <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save
         </button>
 
     </form>
 
 
+        <script type="text/javascript">
+
+			function encrypt() {
+			    var key = CryptoJS.enc.Base64.parse("#base64Key#");
+                var iv  = CryptoJS.enc.Base64.parse("#base64IV#");
+
+                var doc = CKEDITOR.instances["foo"].getData();
+			    var encrypted = CryptoJS.AES.encrypt(doc, key,  {iv: iv});
+
+                document.getElementById("test").value = encrypted;
+
+                return false;
+            }
+
+        </script>
+
 
     {% endblock %}
+
 
 </body>
 </html>

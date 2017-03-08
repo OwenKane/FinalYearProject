@@ -73,15 +73,21 @@
             var iv  = CryptoJS.enc.Base64.parse("#base64IV#");
             var doc = "{{post.document|escapejs}}";
 
-            var decrypted = CryptoJS.AES.decrypt(doc, key, {iv: iv});
-            CKEDITOR.instances["foo"].setData(decrypted.toString(CryptoJS.enc.Utf8));
+            var decrypted = CryptoJS.AES.decrypt(doc, key, {iv: iv}).toString(CryptoJS.enc.Latin1);
 
-			function encrypt(){
-			    var doc = CKEDITOR.instances["foo"].getData();
-			    var encrypted = CryptoJS.AES.encrypt(doc, key,  {iv: iv});
+            document.getElementById("foo").value = decrypted;
 
+            console.log("Doc from DB is: " + doc);
+            console.log("After decrypted is: " + decrypted);
+
+			function encrypt() {
+			    doc = document.getElementById("foo").value;
+                var encrypted = CryptoJS.AES.encrypt(doc, key, {iv: iv});
+                console.log("(Testing) encrypted is: " + encrypted);
+
+                document.getElementById("cke_1_contents").innerText = encrypted;
+                document.getElementById("foo").value = encrypted;
                 document.getElementById("test").value = encrypted;
-
                 return false;
             }
         </script>

@@ -14,10 +14,12 @@ from django.db.models import Q
 @login_required
 def create(request):
     if request.method == 'POST':
-        if request.POST.get('title', False) and request.POST.get('document', False):
+        print("Title is: " + request.POST.get('title', False))
+        print("Doc is: " + request.POST.get('test', False))
+        if request.POST.get('title', False) and request.POST.get('test', False):
             post = Post()
             post.title = request.POST.get('title', False)
-            post.document = request.POST.get('document', False)
+            post.document = request.POST.get('test', False)
             post.pub_date = timezone.datetime.now()
             post.author = request.user
             post.save()
@@ -52,6 +54,14 @@ def post_detail(request, post_id):
     print(postdetails.author.id)
     users = get_friends(request)
     return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users})
+
+
+def test_enc(request, post_id):
+    postdetails = get_object_or_404(Post, pk=post_id)
+    print(postdetails.author)
+    print(postdetails.author.id)
+    users = get_friends(request)
+    return render(request, 'posts/testing.html', {'post': postdetails, 'users': users})
 
 
 def share_editing(request):
@@ -92,7 +102,7 @@ def update(request):
         if request.POST.get('title', False) and request.POST.get('document', False):
             Post.objects.filter(id=request.POST.get('post_id')).update(
                 title=request.POST.get('title', False),
-                document=request.POST.get('document', False),
+                document=request.POST.get('test', False),
             )
             postdetails = get_object_or_404(Post, pk=request.POST.get('post_id'))
             return render(request, 'posts/post_detail.html', {'post': postdetails})
