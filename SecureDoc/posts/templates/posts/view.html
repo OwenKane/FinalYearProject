@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <script type='text/javascript' src="/static/js/doc.js"></script>
+    <script type='text/javascript' src="/static/js/aes.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/css/doc.css">
     <meta charset="UTF-8">
     <title>View</title>
@@ -18,7 +19,7 @@
             {% csrf_token %}
 
             <input type="hidden" name="post_id" value={{post.id}} >
-
+            <input type="hidden" name="test" id="test">
 
             <h3>{{post.title}}</h3>
             <br />
@@ -42,7 +43,7 @@
             <br/>
 
             {%if edit_ability.0.edit_options %}
-                <button class="btn btn-primary" type="submit" value="Save">
+                <button class="btn btn-primary" type="submit" value="Save" onclick="encrypt()">
                     <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save
                 </button>
             {% endif %}
@@ -56,6 +57,25 @@
 
         </form>
     </div>
+
+
+        <script type="text/javascript">
+            var key = CryptoJS.enc.Base64.parse("#base64Key#");
+            var iv  = CryptoJS.enc.Base64.parse("#base64IV#");
+            var doc = "{{post.document|escapejs}}";
+
+            var decrypted = CryptoJS.AES.decrypt(doc, key, {iv: iv});
+            CKEDITOR.instances["foo"].setData(decrypted.toString(CryptoJS.enc.Utf8));
+
+			function encrypt(){
+			    var doc = CKEDITOR.instances["foo"].getData();
+			    var encrypted = CryptoJS.AES.encrypt(doc, key,  {iv: iv});
+
+                document.getElementById("test").value = encrypted;
+
+                return false;
+            }
+        </script>
 
     {% endblock %}
 </body>

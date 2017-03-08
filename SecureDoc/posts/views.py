@@ -56,14 +56,6 @@ def post_detail(request, post_id):
     return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users})
 
 
-def test_enc(request, post_id):
-    postdetails = get_object_or_404(Post, pk=post_id)
-    print(postdetails.author)
-    print(postdetails.author.id)
-    users = get_friends(request)
-    return render(request, 'posts/testing.html', {'post': postdetails, 'users': users})
-
-
 def share_editing(request):
     post_id = request.POST['post_id_to_share']
     delete_dup(request, post_id)
