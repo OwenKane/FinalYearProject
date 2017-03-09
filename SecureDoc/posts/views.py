@@ -68,6 +68,8 @@ def share_editing(request):
 
 def share_viewing(request):
     post_id = request.POST['post_id_to_share']
+    print("Post id is:")
+    print(post_id)
     delete_dup(request, post_id)
     share_with = ShareWith()
     share_with.post = Post.objects.get(id=post_id)
@@ -87,7 +89,7 @@ def delete_dup(request, post_id):
 
 def update(request):
     if request.method == 'POST':
-        if request.POST.get('title', False) and request.POST.get('document', False):
+        if request.POST.get('title', False) and request.POST.get('test', False):
             Post.objects.filter(id=request.POST.get('post_id')).update(
                 title=request.POST.get('title', False),
                 document=request.POST.get('test', False),
@@ -100,6 +102,25 @@ def update(request):
                           {'post': postdetails, 'error': 'Error: Need to fill in all fields'})
     else:
         return render(request, 'posts/create.html')
+
+
+def update_nominated(request):
+    if request.method == 'POST':
+        if request.POST.get('test', False):
+            print("Now, we elevate")
+            post_id = request.POST.get('post_id')
+            Post.objects.filter(id=post_id).update(
+                document=request.POST.get('test', False),
+            )
+            post = get_object_or_404(Post, pk=post_id)
+            edit_ability = ShareWith.objects.filter(post=post, nominated_user=request.user)
+            return render(request, 'posts/view.html', {'post': post, 'edit_ability': edit_ability})
+        else:
+            post_id = request.POST.get('post_id')
+            post = get_object_or_404(Post, pk=post_id)
+            edit_ability = ShareWith.objects.filter(post=post, nominated_user=request.user)
+            return render(request, 'posts/view.html', {'post': post, 'edit_ability': edit_ability,
+                                                       'error': 'Error: Need to fill in all fields'})
 
 
 def view(request, post_id):
