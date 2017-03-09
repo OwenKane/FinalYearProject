@@ -69,12 +69,17 @@
     </div>
 
         <script type="text/javascript">
+        /*
             var key = CryptoJS.enc.Base64.parse("#base64Key#");
             var iv  = CryptoJS.enc.Base64.parse("#base64IV#");
-            console.log("iv is: " + iv);
+        */
             var doc = "{{post.document|escapejs}}";
 
+            var key = "{{cipher.key}}";
+            var iv = "{{cipher.iv}}";
+
             var decrypted = CryptoJS.AES.decrypt(doc, key, {iv: iv});
+            console.log("decrypted is: " + decrypted);
             CKEDITOR.instances["foo"].setData(decrypted.toString(CryptoJS.enc.Utf8));
 
 			function encrypt(){

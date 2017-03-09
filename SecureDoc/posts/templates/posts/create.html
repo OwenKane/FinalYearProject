@@ -61,26 +61,31 @@
         <script type="text/javascript">
 
 			function encrypt() {
-			    var key = CryptoJS.enc.Base64.parse("#base64Key#");
-                var iv  = CryptoJS.enc.Base64.parse("#base64IV#");
+
+			    var iv = new Uint32Array(1);
+                iv = window.crypto.getRandomValues(iv);
+                console.log("Rand is: " + iv[0]);
+
+                var key = CryptoJS.SHA256(iv.toString());
+                console.log("key is: " + key);
+
+                var key2 = key.toString(CryptoJS.enc.Base64);
+                console.log("Hash is: " + key2);
+
+                var iv2 = iv.toString(CryptoJS.enc.Base64);
+                console.log("iv2: " + iv2);
+
+                document.getElementById("key").value = key2;
+                document.getElementById("iv").value = iv2;
 
                 var doc = CKEDITOR.instances["foo"].getData();
-			    var encrypted = CryptoJS.AES.encrypt(doc, key,  {iv: iv});
+			    var encrypted = CryptoJS.AES.encrypt(doc, key2,  {iv: iv2});
 
                 document.getElementById("test").value = encrypted;
+                console.log("test is set to: " + encrypted);
 
                 return false;
             }
-
-            var seed = new Uint32Array(1);
-			seed = window.crypto.getRandomValues(seed);
-            console.log("Rand is: " + seed[0]);
-
-            var key = CryptoJS.SHA256(seed.toString());
-            console.log("key is: " + key);
-
-            document.getElementById("key").value = key;
-            document.getElementById("iv").value = seed;
 
         </script>
 

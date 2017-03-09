@@ -15,6 +15,8 @@ from django.db.models import Q
 @login_required
 def create(request):
     if request.method == 'POST':
+        print("Title is:" + request.POST.get('title', False))
+        print("test is:" + request.POST.get('test', False))
         if request.POST.get('title', False) and request.POST.get('test', False):
             post = Post()
             post.title = request.POST.get('title', False)
@@ -54,7 +56,8 @@ def home(request):
 def post_detail(request, post_id):
     postdetails = get_object_or_404(Post, pk=post_id)
     users = get_friends(request)
-    return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users})
+    cipher = get_object_or_404(Keys, post=postdetails)
+    return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users, 'cipher': cipher})
 
 
 def share_editing(request):
@@ -68,7 +71,8 @@ def share_editing(request):
     share_with.save()
     postdetails = get_object_or_404(Post, pk=post_id)
     users = get_friends(request)
-    return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users})
+    cipher = get_object_or_404(Keys, post=postdetails)
+    return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users, 'cipher': cipher})
 
 
 def share_viewing(request):
@@ -82,7 +86,8 @@ def share_viewing(request):
     share_with.save()
     postdetails = get_object_or_404(Post, pk=post_id)
     users = get_friends(request)
-    return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users})
+    cipher = get_object_or_404(Keys, post=postdetails)
+    return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users, 'cipher': cipher})
 
 
 def delete_dup(request, post_id):
@@ -98,11 +103,13 @@ def update(request):
                 document=request.POST.get('test', False),
             )
             postdetails = get_object_or_404(Post, pk=request.POST.get('post_id'))
-            return render(request, 'posts/post_detail.html', {'post': postdetails})
+            cipher = get_object_or_404(Keys, post=postdetails)
+            return render(request, 'posts/post_detail.html', {'post': postdetails, 'cipher': cipher})
         else:
             postdetails = get_object_or_404(Post, pk=request.POST.get('post_id'))
+            cipher = get_object_or_404(Keys, post=postdetails)
             return render(request, 'posts/post_detail.html',
-                          {'post': postdetails, 'error': 'Error: Need to fill in all fields'})
+                          {'post': postdetails, 'error': 'Error: Need to fill in all fields', 'cipher': cipher})
     else:
         return render(request, 'posts/create.html')
 
@@ -116,19 +123,22 @@ def update_nominated(request):
             )
             post = get_object_or_404(Post, pk=post_id)
             edit_ability = ShareWith.objects.filter(post=post, nominated_user=request.user)
-            return render(request, 'posts/view.html', {'post': post, 'edit_ability': edit_ability})
+            cipher = get_object_or_404(Keys, post=post)
+            return render(request, 'posts/view.html', {'post': post, 'edit_ability': edit_ability, 'cipher': cipher})
         else:
             post_id = request.POST.get('post_id')
             post = get_object_or_404(Post, pk=post_id)
             edit_ability = ShareWith.objects.filter(post=post, nominated_user=request.user)
+            cipher = get_object_or_404(Keys, post=post)
             return render(request, 'posts/view.html', {'post': post, 'edit_ability': edit_ability,
-                                                       'error': 'Error: Need to fill in all fields'})
+                                                       'error': 'Error: Need to fill in all fields', 'cipher': cipher})
 
 
 def view(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     edit_ability = ShareWith.objects.filter(post=post, nominated_user=request.user)
-    return render(request, 'posts/view.html', {'post': post, 'edit_ability': edit_ability})
+    cipher = get_object_or_404(Keys, post=post)
+    return render(request, 'posts/view.html', {'post': post, 'edit_ability': edit_ability, 'cipher': cipher})
 
 
 def get_friends(request):
