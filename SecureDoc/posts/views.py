@@ -14,8 +14,6 @@ from django.db.models import Q
 @login_required
 def create(request):
     if request.method == 'POST':
-        print("Title is: " + request.POST.get('title', False))
-        print("Doc is: " + request.POST.get('test', False))
         if request.POST.get('title', False) and request.POST.get('test', False):
             post = Post()
             post.title = request.POST.get('title', False)
@@ -50,8 +48,6 @@ def home(request):
 
 def post_detail(request, post_id):
     postdetails = get_object_or_404(Post, pk=post_id)
-    print(postdetails.author)
-    print(postdetails.author.id)
     users = get_friends(request)
     return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users})
 
@@ -109,7 +105,6 @@ def update(request):
 def view(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     edit_ability = ShareWith.objects.filter(post=post, nominated_user=request.user)
-    print(edit_ability[0].edit_options)
     return render(request, 'posts/view.html', {'post': post, 'edit_ability': edit_ability})
 
 
