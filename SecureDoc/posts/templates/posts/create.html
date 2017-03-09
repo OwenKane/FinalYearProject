@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script type='text/javascript' src="/static/js/doc.js"></script>
+    <script type='text/javascript' src="/static/js/aes.js"></script>
+    <script type='text/javascript' src="/static/js/pbkdf2.js"></script>
+    <script type='text/javascript' src="/static/js/sha256.js"></script>
+
 
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script type="text/javascript" src="/static/ckeditor/ckeditor/ckeditor.js"></script>
     <script type="text/javascript" src="/static/ckeditor/ckeditor-init.js"></script>
 
-    <script type='text/javascript' src="/static/js/doc.js"></script>
-    <script type='text/javascript' src="/static/js/aes.js"></script>
+
+
 
     <link rel="stylesheet" type="text/css" href="/static/css/doc.css">
     <meta charset="UTF-8">
@@ -65,7 +70,16 @@
                 return false;
             }
 
+            var seed = new Uint32Array(1);
+			seed = window.crypto.getRandomValues(seed);
+            console.log("Rand is: " + seed[0]);
+
+            var key = CryptoJS.SHA256(seed.toString());
+            console.log("key is: " + key);
+
         </script>
+
+
 
 
     {% endblock %}

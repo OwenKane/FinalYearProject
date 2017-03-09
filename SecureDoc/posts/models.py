@@ -26,3 +26,4 @@ class Keys(models.Model):
     post = models.ForeignKey(Post, related_name="%(class)s_to_doc", null=True)
     author = models.ForeignKey(User, related_name="%(class)s_Author_of_doc")
     key = models.TextField()
+    iv = models.TextField(null=True)
