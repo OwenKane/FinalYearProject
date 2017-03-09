@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import Post
 from .models import User
+from .models import Keys
 from .models import ShareWith
 from friends.models import Friend
 from django.db.models import Q
@@ -21,6 +22,12 @@ def create(request):
             post.pub_date = timezone.datetime.now()
             post.author = request.user
             post.save()
+            key = Keys()
+            key.post = Post.objects.get(id=post.id)
+            key.author = request.user
+            key.key = request.POST.get('key', False)
+            key.iv = request.POST.get('iv', False)
+            key.save()
             return redirect('home')
         else:
             users = get_friends(request)
@@ -33,8 +40,6 @@ def create(request):
 @login_required
 def home(request):
     current_user = request.user
-    print("Salt is")
-    print(current_user.password)
     posts = Post.objects.all().filter(author=current_user).order_by('-pub_date')
     s_posts = []
     try:
@@ -68,8 +73,6 @@ def share_editing(request):
 
 def share_viewing(request):
     post_id = request.POST['post_id_to_share']
-    print("Post id is:")
-    print(post_id)
     delete_dup(request, post_id)
     share_with = ShareWith()
     share_with.post = Post.objects.get(id=post_id)
@@ -107,7 +110,6 @@ def update(request):
 def update_nominated(request):
     if request.method == 'POST':
         if request.POST.get('test', False):
-            print("Now, we elevate")
             post_id = request.POST.get('post_id')
             Post.objects.filter(id=post_id).update(
                 document=request.POST.get('test', False),
