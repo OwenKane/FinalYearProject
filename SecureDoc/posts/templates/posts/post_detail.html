@@ -3,6 +3,8 @@
 <head>
     <script type='text/javascript' src="/static/js/doc.js"></script>
     <script type='text/javascript' src="/static/js/aes.js"></script>
+    <script type='text/javascript' src="/static/js/sha256.js"></script>
+    <script type='text/javascript' src="/static/js/pbkdf2.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/css/doc.css">
      <link rel="stylesheet" type="text/css" href="/static/css/post_detail.css">
     <meta charset="UTF-8">
@@ -69,22 +71,23 @@
     </div>
 
         <script type="text/javascript">
-        /*
-            var key = CryptoJS.enc.Base64.parse("#base64Key#");
-            var iv  = CryptoJS.enc.Base64.parse("#base64IV#");
-        */
+
             var doc = "{{post.document|escapejs}}";
 
             var key = "{{cipher.key}}";
             var iv = "{{cipher.iv}}";
 
-            var decrypted = CryptoJS.AES.decrypt(doc, key, {iv: iv});
+            var hash_enc = "{{hash_enc}}";
+            var userKey = String(key) + String(hash_enc);
+            var finalKey = userKey.toString(CryptoJS.enc.Base64);
+
+            var decrypted = CryptoJS.AES.decrypt(doc, finalKey, {iv: iv});
             console.log("decrypted is: " + decrypted);
             CKEDITOR.instances["foo"].setData(decrypted.toString(CryptoJS.enc.Utf8));
 
 			function encrypt(){
 			    var doc = CKEDITOR.instances["foo"].getData();
-			    var encrypted = CryptoJS.AES.encrypt(doc, key,  {iv: iv});
+			    var encrypted = CryptoJS.AES.encrypt(doc, finalKey,  {iv: iv});
 
                 document.getElementById("test").value = encrypted;
 

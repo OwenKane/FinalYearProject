@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+import hashlib
 
 
 # Create your views here.
@@ -31,6 +32,13 @@ def loginview(request):
         user = authenticate(username=request.POST['username'], password=request.POST['password'])
         if user is not None:
             login(request, user)
+            user_info = request.user.password.split('$')
+            salt = user_info[2]
+            pw = request.POST['password']
+            pw_bytes = pw.encode('utf-8')
+            salt_bytes = salt.encode('utf-8')
+            hash_enc = hashlib.sha256(pw_bytes + salt_bytes).hexdigest()
+            request.session['hash'] = hash_enc
             if 'next' in request.POST:
                 return redirect(request.POST['next'])
             return redirect('home')
@@ -42,6 +50,7 @@ def loginview(request):
 
 def logoutview(request):
     if request.method == 'POST':
+        del request.session['hash']
         logout(request)
         return redirect('home')
 

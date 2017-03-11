@@ -60,26 +60,24 @@
 
         <script type="text/javascript">
 
-			function encrypt() {
+            var hash_enc = "{{hash_enc}}";
+            console.log("hash_enc is:" + hash_enc);
 
+			function encrypt() {
 			    var iv = new Uint32Array(1);
                 iv = window.crypto.getRandomValues(iv);
-                console.log("Rand is: " + iv[0]);
+                var iv2 = iv.toString(CryptoJS.enc.Base64);
 
                 var key = CryptoJS.SHA256(iv.toString());
-                console.log("key is: " + key);
+                var userKey = String(key) + String(hash_enc);
+                var final_key = userKey.toString(CryptoJS.enc.Base64);
+                console.log("Final Key is: " + final_key);
 
-                var key2 = key.toString(CryptoJS.enc.Base64);
-                console.log("Hash is: " + key2);
-
-                var iv2 = iv.toString(CryptoJS.enc.Base64);
-                console.log("iv2: " + iv2);
-
-                document.getElementById("key").value = key2;
+                document.getElementById("key").value = key;
                 document.getElementById("iv").value = iv2;
 
                 var doc = CKEDITOR.instances["foo"].getData();
-			    var encrypted = CryptoJS.AES.encrypt(doc, key2,  {iv: iv2});
+			    var encrypted = CryptoJS.AES.encrypt(doc, final_key,  {iv: iv2});
 
                 document.getElementById("test").value = encrypted;
                 console.log("test is set to: " + encrypted);

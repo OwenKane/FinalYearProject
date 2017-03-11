@@ -65,26 +65,26 @@
     </div>
 
         <script type="text/javascript">
-        /*
-            var key = CryptoJS.enc.Base64.parse("#base64Key#");
-            var iv  = CryptoJS.enc.Base64.parse("#base64IV#");
-        */
             var key = "{{cipher.key}}";
             var iv = "{{cipher.iv}}";
 
             var doc = "{{post.document|escapejs}}";
 
-            var decrypted = CryptoJS.AES.decrypt(doc, key, {iv: iv});
+            var hash_enc = "{{hash_enc}}";
+            var userKey = String(key) + String(hash_enc);
+            var finalKey = userKey.toString(CryptoJS.enc.Base64);
+
+            var decrypted = CryptoJS.AES.decrypt(doc, finalKey, {iv: iv});
             console.log("decrypted is: " + decrypted);
             CKEDITOR.instances["foo"].setData(decrypted.toString(CryptoJS.enc.Utf8));
 
 			function encrypt(){
 			    var doc = CKEDITOR.instances["foo"].getData();
-			    var encrypted = CryptoJS.AES.encrypt(doc, key,  {iv: iv});
+			    var encrypted = CryptoJS.AES.encrypt(doc, finalKey,  {iv: iv});
 
                 document.getElementById("test").value = encrypted;
 
-                var value = document.getElementById("test").value
+                var value = document.getElementById("test").value;
 			    console.log(value);
 
                 return false;

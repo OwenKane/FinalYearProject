@@ -8,15 +8,12 @@ from .models import ShareWith
 from friends.models import Friend
 from django.db.models import Q
 
-
 # Create your views here.
 
 
 @login_required
 def create(request):
     if request.method == 'POST':
-        print("Title is:" + request.POST.get('title', False))
-        print("test is:" + request.POST.get('test', False))
         if request.POST.get('title', False) and request.POST.get('test', False):
             post = Post()
             post.title = request.POST.get('title', False)
@@ -36,7 +33,8 @@ def create(request):
             return render(request, 'posts/create.html', {'error': 'Error: Need to fill in all fields', 'users': users})
     else:
         users = get_friends(request)
-        return render(request, 'posts/create.html', {'users': users})
+        hash_enc = request.session['hash'][-6:]
+        return render(request, 'posts/create.html', {'users': users, 'hash_enc': hash_enc})
 
 
 @login_required
@@ -57,7 +55,9 @@ def post_detail(request, post_id):
     postdetails = get_object_or_404(Post, pk=post_id)
     users = get_friends(request)
     cipher = get_object_or_404(Keys, post=postdetails)
-    return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users, 'cipher': cipher})
+    hash_enc = request.session['hash'][-6:]
+    return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users, 'cipher': cipher,
+                                                      'hash_enc': hash_enc})
 
 
 def share_editing(request):
@@ -72,7 +72,9 @@ def share_editing(request):
     postdetails = get_object_or_404(Post, pk=post_id)
     users = get_friends(request)
     cipher = get_object_or_404(Keys, post=postdetails)
-    return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users, 'cipher': cipher})
+    hash_enc = request.session['hash'][-6:]
+    return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users, 'cipher': cipher,
+                                                      'hash_enc': hash_enc})
 
 
 def share_viewing(request):
@@ -87,7 +89,9 @@ def share_viewing(request):
     postdetails = get_object_or_404(Post, pk=post_id)
     users = get_friends(request)
     cipher = get_object_or_404(Keys, post=postdetails)
-    return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users, 'cipher': cipher})
+    hash_enc = request.session['hash'][-6:]
+    return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users, 'cipher': cipher,
+                                                      'hash_enc': hash_enc})
 
 
 def delete_dup(request, post_id):
@@ -104,12 +108,16 @@ def update(request):
             )
             postdetails = get_object_or_404(Post, pk=request.POST.get('post_id'))
             cipher = get_object_or_404(Keys, post=postdetails)
-            return render(request, 'posts/post_detail.html', {'post': postdetails, 'cipher': cipher})
+            hash_enc = request.session['hash'][-6:]
+            return render(request, 'posts/post_detail.html', {'post': postdetails, 'cipher': cipher,
+                                                              'hash_enc': hash_enc})
         else:
             postdetails = get_object_or_404(Post, pk=request.POST.get('post_id'))
             cipher = get_object_or_404(Keys, post=postdetails)
+            hash_enc = request.session['hash'][-6:]
             return render(request, 'posts/post_detail.html',
-                          {'post': postdetails, 'error': 'Error: Need to fill in all fields', 'cipher': cipher})
+                          {'post': postdetails, 'error': 'Error: Need to fill in all fields', 'cipher': cipher,
+                           'hash_enc': hash_enc})
     else:
         return render(request, 'posts/create.html')
 
@@ -124,21 +132,27 @@ def update_nominated(request):
             post = get_object_or_404(Post, pk=post_id)
             edit_ability = ShareWith.objects.filter(post=post, nominated_user=request.user)
             cipher = get_object_or_404(Keys, post=post)
-            return render(request, 'posts/view.html', {'post': post, 'edit_ability': edit_ability, 'cipher': cipher})
+            hash_enc = request.session['hash'][-6:]
+            return render(request, 'posts/view.html', {'post': post, 'edit_ability': edit_ability, 'cipher': cipher,
+                                                       'hash_enc': hash_enc})
         else:
             post_id = request.POST.get('post_id')
             post = get_object_or_404(Post, pk=post_id)
             edit_ability = ShareWith.objects.filter(post=post, nominated_user=request.user)
             cipher = get_object_or_404(Keys, post=post)
+            hash_enc = request.session['hash'][-6:]
             return render(request, 'posts/view.html', {'post': post, 'edit_ability': edit_ability,
-                                                       'error': 'Error: Need to fill in all fields', 'cipher': cipher})
+                                                       'error': 'Error: Need to fill in all fields', 'cipher': cipher,
+                                                       'hash_enc': hash_enc})
 
 
 def view(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     edit_ability = ShareWith.objects.filter(post=post, nominated_user=request.user)
     cipher = get_object_or_404(Keys, post=post)
-    return render(request, 'posts/view.html', {'post': post, 'edit_ability': edit_ability, 'cipher': cipher})
+    hash_enc = request.session['hash'][-6:]
+    return render(request, 'posts/view.html', {'post': post, 'edit_ability': edit_ability, 'cipher': cipher,
+                                               'hash_enc': hash_enc})
 
 
 def get_friends(request):
