@@ -70,6 +70,9 @@ def share_editing(request):
     share_with.edit_options = True
     share_with.save()
     postdetails = get_object_or_404(Post, pk=post_id)
+    key = Keys.objects.get(Post=postdetails)
+    key.edit_options = True
+    key.save()
     users = get_friends(request)
     cipher = get_object_or_404(Keys, post=postdetails)
     hash_enc = request.session['hash'][-6:]
@@ -88,6 +91,9 @@ def share_viewing(request):
     share_with.save()
     postdetails = get_object_or_404(Post, pk=post_id)
     users = get_friends(request)
+    key = Keys.objects.get(Post=postdetails)
+    key.edit_options = True
+    key.save()
     cipher = get_object_or_404(Keys, post=postdetails)
     hash_enc = request.session['hash'][-6:]
     return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users, 'cipher': cipher,

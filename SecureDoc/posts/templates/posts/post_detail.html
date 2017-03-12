@@ -48,19 +48,21 @@
                         <td class="text-right">
                             <form method="post" action="{% url 'posts:share_viewing' %}" name="share_viewing">
                                 {% csrf_token %}
+                                <input type="hidden" name="share" id="share" value="False">
                                 <input type="hidden" name="post_id_to_share" value={{post.id}} >
                                 <input type="hidden" name="post_author" value={{post.author}} >
                                 <input type="hidden" name="friend_username" value={{ user.first.username }} >
-                                <input class="btn btn-primary" type="submit" value="Ability to View">
+                                <input class="btn btn-primary" type="submit" value="Ability to View" onclick="share()">
                             </form>
                         </td>
                         <td class="text-right">
                             <form method="post" action="{% url 'posts:share_editing' %}" name="share_editing">
                                 {% csrf_token %}
+                                <input type="hidden" name="share" id="share" value="False">
                                 <input type="hidden" name="post_id_to_share" value={{post.id}} >
                                 <input type="hidden" name="post_author" value={{post.author}} >
                                 <input type="hidden" name="friend_username" value={{ user.first.username }} >
-                                <input class="btn btn-primary" type="submit" value="Ability to Edit">
+                                <input class="btn btn-primary" type="submit" value="Ability to Edit" onclick="share()">
                             </form>
                         </td>
                         <tr></tr>
@@ -90,8 +92,11 @@
 			    var encrypted = CryptoJS.AES.encrypt(doc, finalKey,  {iv: iv});
 
                 document.getElementById("test").value = encrypted;
-
                 return false;
+            }
+
+            function share() {
+                document.getElementById("share").value = "True";
             }
         </script>
 
