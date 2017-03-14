@@ -76,6 +76,9 @@ def share_editing(request):
     key = Keys.objects.get(post=postdetails)
     key.edit_options = True
     key.save()
+    post = Post.objects.get(id=post_id)
+    post.document = doc2  # change field
+    post.save()  # this will update only
     return post_detail(request, post_id)
 
 
@@ -94,6 +97,9 @@ def share_viewing(request):
     key = Keys.objects.get(post=postdetails)
     key.edit_options = True
     key.save()
+    post = Post.objects.get(id=post_id)
+    post.document = doc  # change field
+    post.save()  # this will update only
     return post_detail(request, post_id)
 
 
