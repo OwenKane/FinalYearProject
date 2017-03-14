@@ -38,31 +38,31 @@
             </button>
         </form>
 
+
         <div class="row">
             <div class="col-md-6">
                 <h3>Share with Friends</h3>
                 <table class="table table-hover">
                     {% for user in users %}
-                        <td>
                         <td>{{user.first.username}}</td>
                         <td class="text-right">
-                            <form method="post" action="{% url 'posts:share_viewing' %}" name="share_viewing">
+                            <form method="post" action="{% url 'posts:share_viewing' %}" name="share_viewing" id="sv">
                                 {% csrf_token %}
+                                <input type="hidden" name="doc" id="doc">
                                 <input type="hidden" name="share" id="share" value="False">
                                 <input type="hidden" name="post_id_to_share" value={{post.id}} >
-                                <input type="hidden" name="post_author" value={{post.author}} >
                                 <input type="hidden" name="friend_username" value={{ user.first.username }} >
-                                <input class="btn btn-primary" type="submit" value="Ability to View" onclick="share()">
+                                <input class="btn btn-primary" type="submit" value="Ability to View" id="share_v">
                             </form>
                         </td>
                         <td class="text-right">
-                            <form method="post" action="{% url 'posts:share_editing' %}" name="share_editing">
+                            <form method="post" action="{% url 'posts:share_editing' %}" name="share_editing" id="se">
                                 {% csrf_token %}
+                                <input type="hidden" name="doc2" id="doc2">
                                 <input type="hidden" name="share" id="share" value="False">
                                 <input type="hidden" name="post_id_to_share" value={{post.id}} >
-                                <input type="hidden" name="post_author" value={{post.author}} >
                                 <input type="hidden" name="friend_username" value={{ user.first.username }} >
-                                <input class="btn btn-primary" type="submit" value="Ability to Edit" onclick="share()">
+                                <input class="btn btn-primary" type="submit" value="Ability to Edit" id="share_e">
                             </form>
                         </td>
                         <tr></tr>
@@ -70,34 +70,56 @@
                 </table>
             </div>
         </div>
+
     </div>
 
         <script type="text/javascript">
+            document.getElementById("share_v").onclick = shareDoc;
+            document.getElementById("share_e").onclick = shareDoc;
 
             var doc = "{{post.document|escapejs}}";
-
+            console.log("Doc from DB is: " + doc);
             var key = "{{cipher.key}}";
             var iv = "{{cipher.iv}}";
+            var edit_option = "{{ cipher.edit_options }}";
 
-            var hash_enc = "{{hash_enc}}";
-            var userKey = String(key) + String(hash_enc);
-            var finalKey = userKey.toString(CryptoJS.enc.Base64);
 
-            var decrypted = CryptoJS.AES.decrypt(doc, finalKey, {iv: iv});
-            console.log("decrypted is: " + decrypted);
+            if(edit_option == "False"){
+                console.log("edit is: " + edit_option);
+                var hash_enc = "{{hash_enc}}";
+                var userKey = String(key) + String(hash_enc);
+                key = userKey.toString(CryptoJS.enc.Base64);
+                console.log("Key now is                  : " + key);
+            }
+
+            key = key.toString(CryptoJS.enc.Base64);
+            console.log("Key being used to decrypt is: " + key);
+            var decrypted = CryptoJS.AES.decrypt(doc, key, {iv: iv});
             CKEDITOR.instances["foo"].setData(decrypted.toString(CryptoJS.enc.Utf8));
 
 			function encrypt(){
+			    console.log("In encrypt");
 			    var doc = CKEDITOR.instances["foo"].getData();
-			    var encrypted = CryptoJS.AES.encrypt(doc, finalKey,  {iv: iv});
-
+			    var encrypted = CryptoJS.AES.encrypt(doc, key,  {iv: iv});
                 document.getElementById("test").value = encrypted;
+
                 return false;
             }
 
-            function share() {
-                document.getElementById("share").value = "True";
+            function shareDoc() {
+                console.log("In Share");
+			    var doc = CKEDITOR.instances["foo"].getData();
+			    console.log("Doc is: " + doc);
+			    key = "{{cipher.key}}";
+
+
+			    var encrypted = CryptoJS.AES.encrypt(doc, key,  {iv: iv});
+			    console.log("Key used is encrypted       : " + key);
+                document.getElementById("doc").value = encrypted;
+                document.getElementById("doc2").value = encrypted;
+                console.log("Passing: " + document.getElementById("doc").value)
             }
+
         </script>
 
 

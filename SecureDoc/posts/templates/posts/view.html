@@ -67,20 +67,26 @@
         <script type="text/javascript">
             var key = "{{cipher.key}}";
             var iv = "{{cipher.iv}}";
-
             var doc = "{{post.document|escapejs}}";
+            var edit_option = "{{ cipher.edit_options }}";
+            console.log("cipher.key is: " + key);
 
-            var hash_enc = "{{hash_enc}}";
-            var userKey = String(key) + String(hash_enc);
-            var finalKey = userKey.toString(CryptoJS.enc.Base64);
 
-            var decrypted = CryptoJS.AES.decrypt(doc, finalKey, {iv: iv});
+            if(edit_option == false){
+                var hash_enc = "{{hash_enc}}";
+                var userKey = String(key) + String(hash_enc);
+                var key = userKey.toString(CryptoJS.enc.Base64);
+                console.log("Extra key is: " + key);
+            }
+
+            console.log("Final key is: " + key);
+            var decrypted = CryptoJS.AES.decrypt(doc, key, {iv: iv});
             console.log("decrypted is: " + decrypted);
             CKEDITOR.instances["foo"].setData(decrypted.toString(CryptoJS.enc.Utf8));
 
 			function encrypt(){
 			    var doc = CKEDITOR.instances["foo"].getData();
-			    var encrypted = CryptoJS.AES.encrypt(doc, finalKey,  {iv: iv});
+			    var encrypted = CryptoJS.AES.encrypt(doc, key,  {iv: iv});
 
                 document.getElementById("test").value = encrypted;
 

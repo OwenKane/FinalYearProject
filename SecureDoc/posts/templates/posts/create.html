@@ -71,16 +71,15 @@
                 var key = CryptoJS.SHA256(iv.toString());
                 var userKey = String(key) + String(hash_enc);
                 var final_key = userKey.toString(CryptoJS.enc.Base64);
-                console.log("Final Key is: " + final_key);
 
                 document.getElementById("key").value = key;
                 document.getElementById("iv").value = iv2;
 
                 var doc = CKEDITOR.instances["foo"].getData();
 			    var encrypted = CryptoJS.AES.encrypt(doc, final_key,  {iv: iv2});
+			    console.log("Key used to encrypt is: " + final_key);
 
                 document.getElementById("test").value = encrypted;
-                console.log("test is set to: " + encrypted);
 
                 return false;
             }

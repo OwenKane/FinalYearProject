@@ -60,8 +60,11 @@ def post_detail(request, post_id):
                                                       'hash_enc': hash_enc})
 
 
+# If users chances doc and shares before hitting save, changes are lost
 def share_editing(request):
     post_id = request.POST['post_id_to_share']
+    doc2 = request.POST.get('doc2', False)
+    print("doc2 is: " + str(doc2))
     delete_dup(request, post_id)
     share_with = ShareWith()
     share_with.post = Post.objects.get(id=post_id)
@@ -70,18 +73,16 @@ def share_editing(request):
     share_with.edit_options = True
     share_with.save()
     postdetails = get_object_or_404(Post, pk=post_id)
-    key = Keys.objects.get(Post=postdetails)
+    key = Keys.objects.get(post=postdetails)
     key.edit_options = True
     key.save()
-    users = get_friends(request)
-    cipher = get_object_or_404(Keys, post=postdetails)
-    hash_enc = request.session['hash'][-6:]
-    return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users, 'cipher': cipher,
-                                                      'hash_enc': hash_enc})
+    return post_detail(request, post_id)
 
 
 def share_viewing(request):
     post_id = request.POST['post_id_to_share']
+    doc = request.POST.get('doc', False)
+    print("doc is: " + str(doc))
     delete_dup(request, post_id)
     share_with = ShareWith()
     share_with.post = Post.objects.get(id=post_id)
@@ -90,14 +91,31 @@ def share_viewing(request):
     share_with.edit_options = False
     share_with.save()
     postdetails = get_object_or_404(Post, pk=post_id)
-    users = get_friends(request)
-    key = Keys.objects.get(Post=postdetails)
+    key = Keys.objects.get(post=postdetails)
     key.edit_options = True
     key.save()
-    cipher = get_object_or_404(Keys, post=postdetails)
-    hash_enc = request.session['hash'][-6:]
-    return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users, 'cipher': cipher,
-                                                      'hash_enc': hash_enc})
+    return post_detail(request, post_id)
+
+
+def share(request):
+    doc = request.POST.get('doc', False)
+    test1 = request.POST.get('test', False)
+    print("doc is: " + str(doc))
+    print("Test1 is: " + str(test1))
+    if request.method == 'POST':
+        if request.POST.get('permission', False):
+            share_editing(request)
+        else:
+            share_viewing(request)
+
+        if request.POST.get('test2', False):
+            Post.objects.filter(id=request.POST.get('post_id')).update(
+                document=request.POST.get('test2', False),
+            )
+            postdetails = get_object_or_404(Post, pk=request.POST.get('post_id'))
+            return post_detail(request, postdetails.id)
+    else:
+        return render(request, 'posts/create.html')
 
 
 def delete_dup(request, post_id):
@@ -113,17 +131,10 @@ def update(request):
                 document=request.POST.get('test', False),
             )
             postdetails = get_object_or_404(Post, pk=request.POST.get('post_id'))
-            cipher = get_object_or_404(Keys, post=postdetails)
-            hash_enc = request.session['hash'][-6:]
-            return render(request, 'posts/post_detail.html', {'post': postdetails, 'cipher': cipher,
-                                                              'hash_enc': hash_enc})
+            return post_detail(request, postdetails.id)
         else:
             postdetails = get_object_or_404(Post, pk=request.POST.get('post_id'))
-            cipher = get_object_or_404(Keys, post=postdetails)
-            hash_enc = request.session['hash'][-6:]
-            return render(request, 'posts/post_detail.html',
-                          {'post': postdetails, 'error': 'Error: Need to fill in all fields', 'cipher': cipher,
-                           'hash_enc': hash_enc})
+            return post_detail(request, postdetails.id)
     else:
         return render(request, 'posts/create.html')
 
