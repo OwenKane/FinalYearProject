@@ -69,16 +69,33 @@
                     {% endfor %}
                 </table>
             </div>
-        </div>
 
+            <div class="col-md-6">
+                <h3>Revoke Friends Access</h3>
+                <table class="table table-hover">
+                    {% for user in shared_with %}
+                        <td>{{user.nominated_user}}</td>
+                        <td class="text-right">
+                            <form method="post" action="{% url 'posts:revoke' %}" name="revoke" id="revoke">
+                                {% csrf_token %}
+                                <input class="btn btn-danger" type="submit" value="Revoke" id="revoke">
+                                <input type="hidden" name="post_id" value={{post.id}} >
+                                <input type="hidden" name="username" value={{user.nominated_user}} >
+                            </form>
+                        </td>
+                        <tr></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
     </div>
 
         <script type="text/javascript">
             document.getElementById("share_v").onclick = shareDoc;
             document.getElementById("share_e").onclick = shareDoc;
+            document.getElementById("revoke").onclick = revoke;
 
             var doc = "{{post.document|escapejs}}";
-            console.log("Doc from DB is                 : " + doc);
             var key = "{{cipher.key}}";
             var iv = "{{cipher.iv}}";
             var edit_option = "{{ cipher.edit_options }}";
@@ -89,14 +106,10 @@
                 var hash_enc = "{{hash_enc}}";
                 var userKey = String(key) + String(hash_enc);
                 key = userKey.toString(CryptoJS.enc.Base64);
-                console.log("Key now is                  : " + key);
             }
 
             key = key.toString(CryptoJS.enc.Base64);
-            console.log("Key being used to decrypt is: " + key);
             var decrypted = CryptoJS.AES.decrypt(doc, key, {iv: iv});
-            console.log("Decrypted doc is            :" + decrypted.toString(CryptoJS.enc.Utf8));
-            console.log("Decrypted doc is            :" + decrypted);
             CKEDITOR.instances["foo"].setData(decrypted.toString(CryptoJS.enc.Utf8));
 
 			function encrypt(){
@@ -104,22 +117,21 @@
 			    var doc = CKEDITOR.instances["foo"].getData();
 			    var encrypted = CryptoJS.AES.encrypt(doc, key,  {iv: iv});
                 document.getElementById("test").value = encrypted;
-                console.log("(In encry) Doc being sent to DB: " + encrypted);
                 return false;
             }
 
             function shareDoc() {
-                console.log("In Share");
 			    var doc = CKEDITOR.instances["foo"].getData();
-			    console.log("Doc is                         : " + doc);
 			    key = "{{cipher.key}}";
 
-
 			    var encrypted = CryptoJS.AES.encrypt(doc, key,  {iv: iv});
-			    console.log("Key used is encrypted          : " + key);
                 document.getElementById("doc").value = encrypted;
                 document.getElementById("doc2").value = encrypted;
-                console.log("(In Share) Doc being sent to DB: " + encrypted);
+            }
+
+            function revoke(){
+			    console.log("In revoke");
+
             }
 
         </script>

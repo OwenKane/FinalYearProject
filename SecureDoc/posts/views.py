@@ -56,8 +56,17 @@ def post_detail(request, post_id):
     users = get_friends(request)
     cipher = get_object_or_404(Keys, post=postdetails)
     hash_enc = request.session['hash'][-6:]
+    shared_with = find_shared(request, post_id)
     return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users, 'cipher': cipher,
-                                                      'hash_enc': hash_enc})
+                                                      'hash_enc': hash_enc, 'shared_with': shared_with})
+
+
+def find_shared(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    share_withs = ShareWith.objects.filter(post=post)
+    for user in share_withs:
+        print(user.nominated_user)
+    return share_withs
 
 
 def share_editing(request):
@@ -143,3 +152,36 @@ def get_friends(request):
         else:
             users.append(User.objects.filter(id=f.friend_id).values('username', 'id'))
     return users
+
+
+def revoke(request):
+    post_id = request.POST.get('post_id', False)
+    username = request.POST.get('username', False)
+    post = get_object_or_404(Post, pk=post_id)
+    user = User.objects.filter(username=username)
+    ShareWith.objects.filter(post=post, nominated_user=user).delete()
+    return post_detail(request, post_id)
+
+
+def update_nominated(request):
+    if request.method == 'POST':
+        if request.POST.get('test', False):
+            post_id = request.POST.get('post_id')
+            Post.objects.filter(id=post_id).update(
+                document=request.POST.get('test', False),
+            )
+            post = get_object_or_404(Post, pk=post_id)
+            edit_ability = ShareWith.objects.filter(post=post, nominated_user=request.user)
+            cipher = get_object_or_404(Keys, post=post)
+            hash_enc = request.session['hash'][-6:]
+            return render(request, 'posts/view.html', {'post': post, 'edit_ability': edit_ability, 'cipher': cipher,
+                                                       'hash_enc': hash_enc})
+        else:
+            post_id = request.POST.get('post_id')
+            post = get_object_or_404(Post, pk=post_id)
+            edit_ability = ShareWith.objects.filter(post=post, nominated_user=request.user)
+            cipher = get_object_or_404(Keys, post=post)
+            hash_enc = request.session['hash'][-6:]
+            return render(request, 'posts/view.html', {'post': post, 'edit_ability': edit_ability,
+                                                       'error': 'Error: Need to fill in all fields', 'cipher': cipher,
+                                                       'hash_enc': hash_enc})
