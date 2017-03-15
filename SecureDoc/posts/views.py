@@ -60,7 +60,6 @@ def post_detail(request, post_id):
                                                       'hash_enc': hash_enc})
 
 
-# If users chances doc and shares before hitting save, changes are lost
 def share_editing(request):
     post_id = request.POST['post_id_to_share']
     doc2 = request.POST.get('doc2', False)
@@ -77,8 +76,8 @@ def share_editing(request):
     key.edit_options = True
     key.save()
     post = Post.objects.get(id=post_id)
-    post.document = doc2  # change field
-    post.save()  # this will update only
+    post.document = doc2
+    post.save()
     return post_detail(request, post_id)
 
 
