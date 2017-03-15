@@ -98,30 +98,9 @@ def share_viewing(request):
     key.edit_options = True
     key.save()
     post = Post.objects.get(id=post_id)
-    post.document = doc  # change field
-    post.save()  # this will update only
+    post.document = doc
+    post.save()
     return post_detail(request, post_id)
-
-
-def share(request):
-    doc = request.POST.get('doc', False)
-    test1 = request.POST.get('test', False)
-    print("doc is: " + str(doc))
-    print("Test1 is: " + str(test1))
-    if request.method == 'POST':
-        if request.POST.get('permission', False):
-            share_editing(request)
-        else:
-            share_viewing(request)
-
-        if request.POST.get('test2', False):
-            Post.objects.filter(id=request.POST.get('post_id')).update(
-                document=request.POST.get('test2', False),
-            )
-            postdetails = get_object_or_404(Post, pk=request.POST.get('post_id'))
-            return post_detail(request, postdetails.id)
-    else:
-        return render(request, 'posts/create.html')
 
 
 def delete_dup(request, post_id):
@@ -143,30 +122,6 @@ def update(request):
             return post_detail(request, postdetails.id)
     else:
         return render(request, 'posts/create.html')
-
-
-def update_nominated(request):
-    if request.method == 'POST':
-        if request.POST.get('test', False):
-            post_id = request.POST.get('post_id')
-            Post.objects.filter(id=post_id).update(
-                document=request.POST.get('test', False),
-            )
-            post = get_object_or_404(Post, pk=post_id)
-            edit_ability = ShareWith.objects.filter(post=post, nominated_user=request.user)
-            cipher = get_object_or_404(Keys, post=post)
-            hash_enc = request.session['hash'][-6:]
-            return render(request, 'posts/view.html', {'post': post, 'edit_ability': edit_ability, 'cipher': cipher,
-                                                       'hash_enc': hash_enc})
-        else:
-            post_id = request.POST.get('post_id')
-            post = get_object_or_404(Post, pk=post_id)
-            edit_ability = ShareWith.objects.filter(post=post, nominated_user=request.user)
-            cipher = get_object_or_404(Keys, post=post)
-            hash_enc = request.session['hash'][-6:]
-            return render(request, 'posts/view.html', {'post': post, 'edit_ability': edit_ability,
-                                                       'error': 'Error: Need to fill in all fields', 'cipher': cipher,
-                                                       'hash_enc': hash_enc})
 
 
 def view(request, post_id):
