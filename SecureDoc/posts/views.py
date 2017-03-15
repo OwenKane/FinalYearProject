@@ -63,7 +63,6 @@ def post_detail(request, post_id):
 def share_editing(request):
     post_id = request.POST['post_id_to_share']
     doc2 = request.POST.get('doc2', False)
-    print("doc2 is: " + str(doc2))
     delete_dup(request, post_id)
     share_with = ShareWith()
     share_with.post = Post.objects.get(id=post_id)
@@ -84,7 +83,6 @@ def share_editing(request):
 def share_viewing(request):
     post_id = request.POST['post_id_to_share']
     doc = request.POST.get('doc', False)
-    print("doc is: " + str(doc))
     delete_dup(request, post_id)
     share_with = ShareWith()
     share_with.post = Post.objects.get(id=post_id)
