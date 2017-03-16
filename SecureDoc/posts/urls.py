@@ -14,5 +14,5 @@ urlpatterns = [
     url(r'^view/(?P<post_id>[0-9]+)/$', views.view, name="view"),
     url(r'^share_editing/', views.share_editing, name="share_editing"),
     url(r'^share_viewing/', views.share_viewing, name="share_viewing"),
+    url(r'^generate_pdf/', views.generate_pdf, name="generate_pdf"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-

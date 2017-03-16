@@ -7,6 +7,9 @@ from .models import Keys
 from .models import ShareWith
 from friends.models import Friend
 from django.db.models import Q
+import pdfcrowd
+from django.http import HttpResponse, response
+
 
 # Create your views here.
 
@@ -185,3 +188,29 @@ def update_nominated(request):
             return render(request, 'posts/view.html', {'post': post, 'edit_ability': edit_ability,
                                                        'error': 'Error: Need to fill in all fields', 'cipher': cipher,
                                                        'hash_enc': hash_enc})
+
+
+def generate_pdf(request):
+    post_id = request.POST['post_id_to_share']
+    postdetails = get_object_or_404(Post, pk=post_id)
+    users = get_friends(request)
+    cipher = get_object_or_404(Keys, post=postdetails)
+    hash_enc = request.session['hash'][-6:]
+    shared_with = find_shared(request, post_id)
+    try:
+        client = pdfcrowd.Client("owenkane", "844e293362c445a06d79a5f5bb6f9900")
+        output_file = open('test.pdf', 'wb')
+        html = request.POST.get('doc2pdf', "I bet")
+        print("Post_id is: " + post_id)
+        print("HTML is:" + str(html))
+        # html = "<head></head><body>My HTML Layout</body>"
+        client.convertHtml(html, output_file)
+        output_file.close()
+        post_detail(request, post_id)
+        return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users, 'cipher': cipher,
+                                                          'hash_enc': hash_enc, 'shared_with': shared_with})
+    except pdfcrowd.Error as why:
+        print('Failed:', why)
+        post_detail(request, post_id)
+        return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users, 'cipher': cipher,
+                                                          'hash_enc': hash_enc, 'shared_with': shared_with})

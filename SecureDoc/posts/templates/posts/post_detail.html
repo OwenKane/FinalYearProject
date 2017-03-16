@@ -39,6 +39,16 @@
         </form>
 
 
+        <form method="POST" action="{% url 'posts:generate_pdf' %}">
+            {% csrf_token %}
+            <br/>
+            <input type="hidden" name="doc2pdf" id="doc2pdf">
+            <input type="hidden" name="post_id_to_share" value={{post.id}} >
+            <button class="btn btn-primary" type="submit" value="pdf" id="toPDF">
+                <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Export to PDF
+            </button>
+        </form>
+
         <div class="row">
             <div class="col-md-6">
                 <h3>Share with Friends</h3>
@@ -78,7 +88,7 @@
                         <td class="text-right">
                             <form method="post" action="{% url 'posts:revoke' %}" name="revoke" id="revoke">
                                 {% csrf_token %}
-                                <input class="btn btn-danger" type="submit" value="Revoke" id="revoke">
+                                <input class="btn btn-danger" type="submit" value="Revoke" id="revoke" >
                                 <input type="hidden" name="post_id" value={{post.id}} >
                                 <input type="hidden" name="username" value={{user.nominated_user}} >
                             </form>
@@ -93,7 +103,7 @@
         <script type="text/javascript">
             document.getElementById("share_v").onclick = shareDoc;
             document.getElementById("share_e").onclick = shareDoc;
-            document.getElementById("revoke").onclick = revoke;
+            document.getElementById("toPDF").onclick = toPDF;
 
             var doc = "{{post.document|escapejs}}";
             var key = "{{cipher.key}}";
@@ -110,6 +120,7 @@
 
             key = key.toString(CryptoJS.enc.Base64);
             var decrypted = CryptoJS.AES.decrypt(doc, key, {iv: iv});
+            console.log("Key used to decrypt is:" + key);
             CKEDITOR.instances["foo"].setData(decrypted.toString(CryptoJS.enc.Utf8));
 
 			function encrypt(){
@@ -129,10 +140,11 @@
                 document.getElementById("doc2").value = encrypted;
             }
 
-            function revoke(){
-			    console.log("In revoke");
-
+            function toPDF() {
+			    var doc = CKEDITOR.instances["foo"].getData();
+                document.getElementById("doc2pdf").value = doc;
             }
+
 
         </script>
 
