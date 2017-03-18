@@ -16,6 +16,8 @@
 
     {% block content %}
 
+        test - {{ response }}
+
     <div class="container">
         <form method="POST" action="{% url 'posts:update' %}">
             {% csrf_token %}
@@ -39,7 +41,7 @@
         </form>
 
 
-        <form method="POST" action="{% url 'posts:generate_pdf' %}">
+        <form method="POST" action="{% url 'posts:download' %}">
             {% csrf_token %}
             <br/>
             <input type="hidden" name="doc2pdf" id="doc2pdf">

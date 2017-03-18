@@ -1,5 +1,8 @@
-from django.shortcuts import render, redirect, get_object_or_404
+import mimetypes
+
+from django.shortcuts import render, redirect, get_object_or_404, render_to_response
 from django.contrib.auth.decorators import login_required
+from django.template import RequestContext
 from django.utils import timezone
 from .models import Post
 from .models import User
@@ -9,6 +12,11 @@ from friends.models import Friend
 from django.db.models import Q
 import pdfcrowd
 from django.http import HttpResponse, response
+from django.utils.encoding import smart_str
+
+import os, tempfile, zipfile
+from django.http import HttpResponse
+from wsgiref.util import FileWrapper
 
 
 # Create your views here.
@@ -200,17 +208,26 @@ def generate_pdf(request):
     try:
         client = pdfcrowd.Client("owenkane", "844e293362c445a06d79a5f5bb6f9900")
         output_file = open('test.pdf', 'wb')
-        html = request.POST.get('doc2pdf', "I bet")
-        print("Post_id is: " + post_id)
-        print("HTML is:" + str(html))
-        # html = "<head></head><body>My HTML Layout</body>"
+        html = request.POST.get('doc2pdf', "Failed")
         client.convertHtml(html, output_file)
         output_file.close()
         post_detail(request, post_id)
         return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users, 'cipher': cipher,
-                                                          'hash_enc': hash_enc, 'shared_with': shared_with})
+                                                          'hash_enc': hash_enc, 'shared_with': shared_with, 'response': response})
     except pdfcrowd.Error as why:
         print('Failed:', why)
         post_detail(request, post_id)
         return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users, 'cipher': cipher,
                                                           'hash_enc': hash_enc, 'shared_with': shared_with})
+
+
+def download(request):
+    file_name = 'test.pdf'
+    # file_path = settings.MEDIA_ROOT +'/'+ file_name
+    file_wrapper = FileWrapper(open(file_name, 'rb'))
+    file_mimetype = mimetypes.guess_type(file_name)
+    response = HttpResponse(file_wrapper, content_type=file_mimetype )
+    response['X-Sendfile'] = file_name
+    response['Content-Length'] = os.stat(file_name).st_size
+    response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(file_name)
+    return response

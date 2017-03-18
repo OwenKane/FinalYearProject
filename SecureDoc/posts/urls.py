@@ -15,4 +15,5 @@ urlpatterns = [
     url(r'^share_editing/', views.share_editing, name="share_editing"),
     url(r'^share_viewing/', views.share_viewing, name="share_viewing"),
     url(r'^generate_pdf/', views.generate_pdf, name="generate_pdf"),
+    url(r'^download/', views.download, name="download"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
