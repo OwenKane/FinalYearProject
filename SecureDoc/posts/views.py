@@ -1,8 +1,8 @@
 import mimetypes
-
+import os
+import cloudconvert
 from django.shortcuts import render, redirect, get_object_or_404, render_to_response
 from django.contrib.auth.decorators import login_required
-from django.template import RequestContext
 from django.utils import timezone
 from .models import Post
 from .models import User
@@ -11,10 +11,8 @@ from .models import ShareWith
 from friends.models import Friend
 from django.db.models import Q
 import pdfcrowd
-from django.http import HttpResponse, response
+from django.http import response
 from django.utils.encoding import smart_str
-
-import os, tempfile, zipfile
 from django.http import HttpResponse
 from wsgiref.util import FileWrapper
 
@@ -198,7 +196,7 @@ def update_nominated(request):
                                                        'hash_enc': hash_enc})
 
 
-def generate_pdf(request):
+def generate_doc(request):
     post_id = request.POST['post_id_to_share']
     postdetails = get_object_or_404(Post, pk=post_id)
     users = get_friends(request)
@@ -206,11 +204,15 @@ def generate_pdf(request):
     hash_enc = request.session['hash'][-6:]
     shared_with = find_shared(request, post_id)
     try:
-        client = pdfcrowd.Client("owenkane", "844e293362c445a06d79a5f5bb6f9900")
-        output_file = open('test.pdf', 'wb')
-        html = request.POST.get('doc2pdf', "Failed")
-        client.convertHtml(html, output_file)
-        output_file.close()
+        api = cloudconvert.Api('ce7WHRtsgw-ZXayCkXX1ke-H53dBWlmnyjw9lzWt5JogRbpV31Fd-W4_8TSsfJmA5D9qpv5TfEAp3ipL5Eba_g')
+        process = api.convert({
+            'inputformat': 'pdf',
+            'outputformat': 'docx',
+            'input': 'upload',
+            'file': open('test2.pdf', 'rb')
+        })
+        process.wait()  # wait until conversion finished
+        process.download("test2.docx")  # download output file
         post_detail(request, post_id)
         return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users, 'cipher': cipher,
                                                           'hash_enc': hash_enc, 'shared_with': shared_with, 'response': response})
@@ -221,10 +223,47 @@ def generate_pdf(request):
                                                           'hash_enc': hash_enc, 'shared_with': shared_with})
 
 
-def download(request):
-    file_name = 'test.pdf'
+def generate_pdf(request):
+    try:
+        client = pdfcrowd.Client("owenkane", "844e293362c445a06d79a5f5bb6f9900")
+        post_id = request.POST['post_id_pdf']
+        output_file = open('test' + str(post_id) + '.pdf', 'wb')
+        html = request.POST.get('doc2pdf', "Failed")
+        client.convertHtml(html, output_file)
+        output_file.close()
+    except pdfcrowd.Error as why:
+        print('Failed:', why)
+
+
+def download_pdf(request):
+    generate_pdf(request)
+    post_id = request.POST['post_id_pdf']
+    file_name = 'test' + str(post_id) + '.pdf'
     # file_path = settings.MEDIA_ROOT +'/'+ file_name
     file_wrapper = FileWrapper(open(file_name, 'rb'))
+    file_mimetype = mimetypes.guess_type(file_name)
+    response = HttpResponse(file_wrapper, content_type=file_mimetype )
+    response['X-Sendfile'] = file_name
+    response['Content-Length'] = os.stat(file_name).st_size
+    response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(file_name)
+    os.remove(file_name)
+    return response
+
+
+def download_doc(request):
+    api = cloudconvert.Api('ce7WHRtsgw-ZXayCkXX1ke-H53dBWlmnyjw9lzWt5JogRbpV31Fd-W4_8TSsfJmA5D9qpv5TfEAp3ipL5Eba_g')
+    process = api.convert({
+        'inputformat': 'html',
+        'outputformat': 'docx',
+        'input': 'upload',
+        'file': request.POST.get('html2doc', False)
+    })
+    process.wait()  # wait until conversion finished
+    process.download("test2.docx")  # download output file
+    file_name = 'test2.docx'
+    # file_path = settings.MEDIA_ROOT +'/'+ file_name
+    # file_wrapper = FileWrapper(open(file_name, 'rb'))
+    file_wrapper = FileWrapper(request.POST.get('html2doc', False))
     file_mimetype = mimetypes.guess_type(file_name)
     response = HttpResponse(file_wrapper, content_type=file_mimetype )
     response['X-Sendfile'] = file_name
