@@ -62,12 +62,15 @@ def home(request):
 
 def post_detail(request, post_id):
     postdetails = get_object_or_404(Post, pk=post_id)
-    users = get_friends(request)
-    cipher = get_object_or_404(Keys, post=postdetails)
-    hash_enc = request.session['hash'][-6:]
-    shared_with = find_shared(request, post_id)
-    return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users, 'cipher': cipher,
-                                                      'hash_enc': hash_enc, 'shared_with': shared_with})
+    if request.user == postdetails.author:
+        users = get_friends(request)
+        cipher = get_object_or_404(Keys, post=postdetails)
+        hash_enc = request.session['hash'][-6:]
+        shared_with = find_shared(request, post_id)
+        return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users, 'cipher': cipher,
+                                                          'hash_enc': hash_enc, 'shared_with': shared_with})
+    else:
+        return
 
 
 def find_shared(request, post_id):
