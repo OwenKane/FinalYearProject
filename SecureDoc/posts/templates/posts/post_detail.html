@@ -43,7 +43,7 @@
             {% csrf_token %}
             <br/>
             <input type="hidden" name="doc2pdf" id="doc2pdf">
-            <input type="hidden" name="post_id_pdf" value={{post.id}} >
+            <input type="hidden" name="post_id" value={{post.id}} >
             <button class="btn btn-primary" type="submit" value="pdf" id="toPDF">
                 <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Export to PDF
             </button>
@@ -53,7 +53,7 @@
             {% csrf_token %}
             <br/>
             <input type="hidden" name="html2doc" id="html2doc">
-            <input type="hidden" name="post_id_to_share" value={{post.id}} >
+            <input type="hidden" name="post_id" value={{post.id}} >
             <button class="btn btn-primary" type="submit" value="doc" id="todoc">
                 <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Export to docx
             </button>
@@ -70,7 +70,7 @@
                                 {% csrf_token %}
                                 <input type="hidden" name="doc" id="doc">
                                 <input type="hidden" name="share" id="share" value="False">
-                                <input type="hidden" name="post_id_to_share" value={{post.id}} >
+                                <input type="hidden" name="post_id" id="post_id" value={{post.id}} >
                                 <input type="hidden" name="friend_username" value={{ user.first.username }} >
                                 <input class="btn btn-primary" type="submit" value="Ability to View" id="share_v">
                             </form>
@@ -80,7 +80,7 @@
                                 {% csrf_token %}
                                 <input type="hidden" name="doc2" id="doc2">
                                 <input type="hidden" name="share" id="share" value="False">
-                                <input type="hidden" name="post_id_to_share" value={{post.id}} >
+                                <input type="hidden" name="post_id" id="post_id" value={{post.id}} >
                                 <input type="hidden" name="friend_username" value={{ user.first.username }} >
                                 <input class="btn btn-primary" type="submit" value="Ability to Edit" id="share_e">
                             </form>
@@ -152,11 +152,13 @@
             }
 
             function toPDF() {
+			    console.log("In PDF");
 			    var doc = CKEDITOR.instances["foo"].getData();
                 document.getElementById("doc2pdf").value = doc;
             }
 
             function todoc() {
+			    console.log("In Doc");
 			    var doc = CKEDITOR.instances["foo"].getData();
                 document.getElementById("html2doc").value = doc;
             }
