@@ -70,7 +70,7 @@ def post_detail(request, post_id):
         return render(request, 'posts/post_detail.html', {'post': postdetails, 'users': users, 'cipher': cipher,
                                                           'hash_enc': hash_enc, 'shared_with': shared_with})
     else:
-        return
+        return redirect('home')
 
 
 def find_shared(request, post_id):
