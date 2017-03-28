@@ -17,47 +17,67 @@
     {% block content %}
 
     <div class="container">
-        <form method="POST" action="{% url 'posts:update' %}">
-            {% csrf_token %}
+        <table style="width: auto;" class="table ">
+            <form method="POST" action="{% url 'posts:update' %}">
+                {% csrf_token %}
 
-            <input type="hidden" name="post_id" value={{post.id}} >
-            <h3><input id="title" type="text" name="title" value="{{post.title}}"></h3>
-            <br />
+                <input type="hidden" name="post_id" value={{post.id}} >
+                <h3><input id="title" type="text" name="title" value="{{post.title}}"></h3>
+                <br />
 
-            {% load wysiwyg %}
-            {% wysiwyg_setup %}
+                {% load wysiwyg %}
+                {% wysiwyg_setup %}
 
-            <textarea id="foo" name="document"></textarea>
-            <input type="hidden" name="test" id="test">
+                <textarea id="foo" name="document"></textarea>
+                <input type="hidden" name="test" id="test">
 
-            {% wysiwyg_editor "foo" %}
+                {% wysiwyg_editor "foo" %}
 
-            <br/>
-            <button class="btn btn-primary" type="submit" value="Save" onclick="encrypt()">
-              <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save
-            </button>
-        </form>
+                <br/>
+                <th>
+                <button class="btn btn-primary" type="submit" value="Save" onclick="encrypt()">
+                  <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save
+                </button>
+                </th>
+            </form>
 
+            <td>
+            <form method="POST" action="{% url 'posts:download_pdf' %}">
+                {% csrf_token %}
 
-        <form method="POST" action="{% url 'posts:download_pdf' %}">
-            {% csrf_token %}
-            <br/>
-            <input type="hidden" name="doc2pdf" id="doc2pdf">
-            <input type="hidden" name="post_id" value={{post.id}} >
-            <button class="btn btn-primary" type="submit" value="pdf" id="toPDF">
-                <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Export to PDF
-            </button>
-        </form>
+                <input type="hidden" name="doc2pdf" id="doc2pdf">
+                <input type="hidden" name="post_id" value={{post.id}} >
+                <button class="btn btn-primary" type="submit" value="pdf" id="toPDF">
+                    <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Export to PDF
+                </button>
+            </form>
+            </td>
 
-        <form method="POST" action="{% url 'posts:download_doc' %}">
-            {% csrf_token %}
-            <br/>
-            <input type="hidden" name="html2doc" id="html2doc">
-            <input type="hidden" name="post_id" value={{post.id}} >
-            <button class="btn btn-primary" type="submit" value="doc" id="todoc">
-                <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Export to docx
-            </button>
-        </form>
+            <td>
+            <form method="POST" action="{% url 'posts:download_doc' %}">
+                {% csrf_token %}
+
+                <input type="hidden" name="html2doc" id="html2doc">
+                <input type="hidden" name="post_id" value={{post.id}} >
+                <button class="btn btn-primary" type="submit" value="doc" id="todoc">
+                    <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Export to docx
+                </button>
+            </form>
+            </td>
+
+            <td>
+                <form method="POST" action="{% url 'posts:delete_doc' %}">
+                {% csrf_token %}
+
+                <input type="hidden" name="post_id" value={{post.id}} >
+                <button class="btn btn-danger" type="submit" value="doc" id="delete">
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete Document
+                </button>
+                </form>
+            </td>
+
+        </table>
+        <br>
 
         <div class="row">
             <div class="col-md-6">

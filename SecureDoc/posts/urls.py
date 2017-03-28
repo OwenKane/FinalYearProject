@@ -18,4 +18,5 @@ urlpatterns = [
     url(r'^generate_doc/', views.generate_doc, name="generate_doc"),
     url(r'^download_pdf/', views.download_pdf, name="download_pdf"),
     url(r'^download_doc/', views.download_doc, name="download_doc"),
+    url(r'^delete_doc/', views.delete_doc, name="delete_doc"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

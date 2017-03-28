@@ -218,7 +218,7 @@ def download_pdf(request):
     # file_path = settings.MEDIA_ROOT +'/'+ file_name
     file_wrapper = FileWrapper(open(file_name, 'rb'))
     file_mimetype = mimetypes.guess_type(file_name)
-    response = HttpResponse(file_wrapper, content_type=file_mimetype )
+    response = HttpResponse(file_wrapper, content_type=file_mimetype)
     response['X-Sendfile'] = file_name
     response['Content-Length'] = os.stat(file_name).st_size
     response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(file_name)
@@ -254,3 +254,9 @@ def download_doc(request):
     response['Content-Length'] = os.stat(file_name).st_size
     response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(file_name)
     return response
+
+
+def delete_doc(request):
+    post_id = request.POST['post_id']
+    Post.objects.filter(id=post_id).delete()
+    return home(request)
