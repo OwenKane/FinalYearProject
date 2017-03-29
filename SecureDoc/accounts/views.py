@@ -20,13 +20,7 @@ def signup(request):
                                                 first_name=request.POST['fname'],
                                                 last_name=request.POST['lname'])
                 login(request, user)
-                user_info = request.user.password.split('$')
-                salt = user_info[2]
-                pw = request.POST['password']
-                pw_bytes = pw.encode('utf-8')
-                salt_bytes = salt.encode('utf-8')
-                hash_enc = hashlib.sha256(pw_bytes + salt_bytes).hexdigest()
-                request.session['hash'] = hash_enc
+                set_key(request)
                 return redirect('home')
         else:
             return render(request, 'accounts/signup.html', {'error': 'Passwords didn\'t match'})
@@ -34,18 +28,22 @@ def signup(request):
         return render(request, 'accounts/signup.html')
 
 
+def set_key(request):
+    user_info = request.user.password.split('$')
+    salt = user_info[2]
+    pw = request.POST['password']
+    pw_bytes = pw.encode('utf-8')
+    salt_bytes = salt.encode('utf-8')
+    hash_enc = hashlib.sha256(pw_bytes + salt_bytes).hexdigest()
+    request.session['hash'] = hash_enc
+
+
 def loginview(request):
     if request.method == 'POST':
         user = authenticate(username=request.POST['username'], password=request.POST['password'])
         if user is not None:
             login(request, user)
-            user_info = request.user.password.split('$')
-            salt = user_info[2]
-            pw = request.POST['password']
-            pw_bytes = pw.encode('utf-8')
-            salt_bytes = salt.encode('utf-8')
-            hash_enc = hashlib.sha256(pw_bytes + salt_bytes).hexdigest()
-            request.session['hash'] = hash_enc
+            set_key(request)
             if 'next' in request.POST:
                 return redirect(request.POST['next'])
             return redirect('home')
