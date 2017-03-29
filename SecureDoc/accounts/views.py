@@ -20,6 +20,13 @@ def signup(request):
                                                 first_name=request.POST['fname'],
                                                 last_name=request.POST['lname'])
                 login(request, user)
+                user_info = request.user.password.split('$')
+                salt = user_info[2]
+                pw = request.POST['password']
+                pw_bytes = pw.encode('utf-8')
+                salt_bytes = salt.encode('utf-8')
+                hash_enc = hashlib.sha256(pw_bytes + salt_bytes).hexdigest()
+                request.session['hash'] = hash_enc
                 return redirect('home')
         else:
             return render(request, 'accounts/signup.html', {'error': 'Passwords didn\'t match'})
