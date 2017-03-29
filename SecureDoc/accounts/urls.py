@@ -10,5 +10,4 @@ urlpatterns = [
     url(r'^profile/', views.profile, name="profile"),
     url(r'^login/', views.loginview, name="login"),
     url(r'^logout/', views.logoutview, name="logout"),
-    url(r'^ckeditor/', include('ckeditor_uploader.urls')),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
