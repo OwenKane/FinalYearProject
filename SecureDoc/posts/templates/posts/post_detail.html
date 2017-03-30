@@ -152,7 +152,7 @@
             var decrypted = CryptoJS.AES.decrypt(doc, key, {iv: iv});
             CKEDITOR.instances["foo"].setData(decrypted.toString(CryptoJS.enc.Utf8));
 
-			function encrypt(){
+            function encrypt(){
 			    var doc = CKEDITOR.instances["foo"].getData();
 			    var encrypted = CryptoJS.AES.encrypt(doc, key,  {iv: iv});
 			    document.getElementById("test").value = encrypted;
@@ -177,8 +177,6 @@
 			    var doc = CKEDITOR.instances["foo"].getData();
 			    document.getElementById("html2doc").value = doc;
             }
-
-
         </script>
 
 
