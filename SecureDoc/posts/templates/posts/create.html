@@ -42,7 +42,7 @@
         {% wysiwyg_setup %}
 
         <textarea id="foo" name="document"></textarea>
-        <input type="hidden" name="test" id="test">
+        <input type="hidden" name="doc" id="doc">
         <input type="hidden" name="key" id="key">
         <input type="hidden" name="iv" id="iv">
 
@@ -61,25 +61,22 @@
         <script type="text/javascript">
 
             var hash_enc = "{{hash_enc}}";
-            console.log("hash_enc is:" + hash_enc);
 
 			function encrypt() {
 			    var iv = new Uint32Array(1);
-                iv = window.crypto.getRandomValues(iv);
-                var iv2 = iv.toString(CryptoJS.enc.Base64);
+			    iv = window.crypto.getRandomValues(iv);
+			    var iv2 = iv.toString(CryptoJS.enc.Base64);
 
-                var key = CryptoJS.SHA256(iv.toString());
-                var userKey = String(key) + String(hash_enc);
-                var final_key = userKey.toString(CryptoJS.enc.Base64);
+			    var key = CryptoJS.SHA256(iv.toString());
+			    var userKey = String(key) + String(hash_enc);
+			    var final_key = userKey.toString(CryptoJS.enc.Base64);
 
-                document.getElementById("key").value = key;
-                document.getElementById("iv").value = iv2;
+			    document.getElementById("key").value = key;
+			    document.getElementById("iv").value = iv2;
 
-                var doc = CKEDITOR.instances["foo"].getData();
+			    var doc = CKEDITOR.instances["foo"].getData();
 			    var encrypted = CryptoJS.AES.encrypt(doc, final_key,  {iv: iv2});
-			    console.log("Key used to encrypt is: " + final_key);
-
-                document.getElementById("test").value = encrypted;
+                document.getElementById("doc").value = encrypted;
 
                 return false;
             }

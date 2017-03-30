@@ -23,10 +23,10 @@ from wsgiref.util import FileWrapper
 @login_required
 def create(request):
     if request.method == 'POST':
-        if request.POST.get('title', False) and request.POST.get('test', False):
+        if request.POST.get('title', False) and request.POST.get('doc', False):
             post = Post()
             post.title = request.POST.get('title', False)
-            post.document = request.POST.get('test', False)
+            post.document = request.POST.get('doc', False)
             post.pub_date = timezone.datetime.now()
             post.author = request.user
             post.save()
