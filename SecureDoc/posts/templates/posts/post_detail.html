@@ -143,7 +143,6 @@
 
 
             if(edit_option == "False"){
-                console.log("edit is: " + edit_option);
                 var hash_enc = "{{hash_enc}}";
                 var userKey = String(key) + String(hash_enc);
                 key = userKey.toString(CryptoJS.enc.Base64);
@@ -151,11 +150,9 @@
 
             key = key.toString(CryptoJS.enc.Base64);
             var decrypted = CryptoJS.AES.decrypt(doc, key, {iv: iv});
-            console.log("Key used to decrypt is:" + key);
             CKEDITOR.instances["foo"].setData(decrypted.toString(CryptoJS.enc.Utf8));
 
 			function encrypt(){
-			    console.log("In encrypt");
 			    var doc = CKEDITOR.instances["foo"].getData();
 			    var encrypted = CryptoJS.AES.encrypt(doc, key,  {iv: iv});
                 document.getElementById("test").value = encrypted;
@@ -172,13 +169,11 @@
             }
 
             function toPDF() {
-			    console.log("In PDF");
 			    var doc = CKEDITOR.instances["foo"].getData();
                 document.getElementById("doc2pdf").value = doc;
             }
 
             function todoc() {
-			    console.log("In Doc");
 			    var doc = CKEDITOR.instances["foo"].getData();
                 document.getElementById("html2doc").value = doc;
             }
