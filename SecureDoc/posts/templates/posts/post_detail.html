@@ -155,8 +155,8 @@
 			function encrypt(){
 			    var doc = CKEDITOR.instances["foo"].getData();
 			    var encrypted = CryptoJS.AES.encrypt(doc, key,  {iv: iv});
-                document.getElementById("test").value = encrypted;
-                return false;
+			    document.getElementById("test").value = encrypted;
+			    return false;
             }
 
             function shareDoc() {
@@ -164,18 +164,18 @@
 			    key = "{{cipher.key}}";
 
 			    var encrypted = CryptoJS.AES.encrypt(doc, key,  {iv: iv});
-                document.getElementById("doc").value = encrypted;
-                document.getElementById("doc2").value = encrypted;
+			    document.getElementById("doc").value = encrypted;
+			    document.getElementById("doc2").value = encrypted;
             }
 
             function toPDF() {
 			    var doc = CKEDITOR.instances["foo"].getData();
-                document.getElementById("doc2pdf").value = doc;
+			    document.getElementById("doc2pdf").value = doc;
             }
 
             function todoc() {
 			    var doc = CKEDITOR.instances["foo"].getData();
-                document.getElementById("html2doc").value = doc;
+			    document.getElementById("html2doc").value = doc;
             }
 
 
