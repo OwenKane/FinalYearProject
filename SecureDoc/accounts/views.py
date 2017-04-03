@@ -9,6 +9,9 @@ import hashlib
 
 def signup(request):
     if request.method == 'POST':
+        print("username is: " + request.POST['username'])
+        print("password1 is: " + request.POST['password1'])
+        print("password2 is: " + request.POST['password2'])
         if request.POST['password1'] == request.POST['password2']:
             try:
                 User.objects.get(username=request.POST['username'])
@@ -31,7 +34,7 @@ def signup(request):
 def set_key(request):
     user_info = request.user.password.split('$')
     salt = user_info[2]
-    pw = request.POST['password']
+    pw = request.POST['password1']
     pw_bytes = pw.encode('utf-8')
     salt_bytes = salt.encode('utf-8')
     hash_enc = hashlib.sha256(pw_bytes + salt_bytes).hexdigest()
@@ -40,7 +43,7 @@ def set_key(request):
 
 def loginview(request):
     if request.method == 'POST':
-        user = authenticate(username=request.POST['username'], password=request.POST['password'])
+        user = authenticate(username=request.POST['username'], password=request.POST['password1'])
         if user is not None:
             login(request, user)
             set_key(request)

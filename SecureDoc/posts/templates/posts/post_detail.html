@@ -46,7 +46,7 @@
                 {% csrf_token %}
 
                 <input type="hidden" name="doc2pdf" id="doc2pdf">
-                <input type="hidden" name="post_id" value={{post.id}} >
+                <input type="hidden" name="post_title" value={{post.title}} >
                 <button class="btn btn-primary" type="submit" value="pdf" id="toPDF">
                     <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Export to PDF
                 </button>
@@ -58,7 +58,7 @@
                 {% csrf_token %}
 
                 <input type="hidden" name="html2doc" id="html2doc">
-                <input type="hidden" name="post_id" value={{post.id}} >
+                <input type="hidden" name="post_title" value={{post.title}} >
                 <button class="btn btn-primary" type="submit" value="doc" id="todoc">
                     <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Export to docx
                 </button>

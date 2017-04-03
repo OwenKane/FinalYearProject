@@ -202,8 +202,8 @@ def update_nominated(request):
 def generate_pdf(request):
     try:
         client = pdfcrowd.Client("owenkane", "844e293362c445a06d79a5f5bb6f9900")
-        post_id = request.POST['post_id']
-        output_file = open('test' + str(post_id) + '.pdf', 'wb')
+        post_title = request.POST['post_title']
+        output_file = open(post_title + '.pdf', 'wb')
         html = request.POST.get('doc2pdf', "Failed")
         client.convertHtml(html, output_file)
         output_file.close()
@@ -213,9 +213,8 @@ def generate_pdf(request):
 
 def download_pdf(request):
     generate_pdf(request)
-    post_id = request.POST['post_id']
-    file_name = 'test' + str(post_id) + '.pdf'
-    # file_path = settings.MEDIA_ROOT +'/'+ file_name
+    post_title = request.POST['post_title']
+    file_name = post_title + '.pdf'
     file_wrapper = FileWrapper(open(file_name, 'rb'))
     file_mimetype = mimetypes.guess_type(file_name)
     response = HttpResponse(file_wrapper, content_type=file_mimetype)
@@ -228,8 +227,8 @@ def download_pdf(request):
 
 def generate_doc(request):
     generate_pdf(request)
-    post_id = request.POST['post_id']
-    file_name = 'test' + str(post_id) + '.pdf'
+    post_title = request.POST['post_title']
+    file_name = post_title + '.pdf'
     api = cloudconvert.Api('ce7WHRtsgw-ZXayCkXX1ke-H53dBWlmnyjw9lzWt5JogRbpV31Fd-W4_8TSsfJmA5D9qpv5TfEAp3ipL5Eba_g')
     process = api.convert({
         'inputformat': 'pdf',
@@ -239,14 +238,13 @@ def generate_doc(request):
     })
     process.wait()  # wait until conversion finished
     os.remove(file_name)
-    process.download('test' + str(post_id) + '.docx')  # download output file
+    process.download(post_title + '.docx')  # download output file
 
 
 def download_doc(request):
     generate_doc(request)
-    post_id = request.POST['post_id']
-    file_name = 'test' + str(post_id) + '.docx'
-    # file_path = settings.MEDIA_ROOT +'/'+ file_name
+    post_title = request.POST['post_title']
+    file_name = post_title + '.docx'
     file_wrapper = FileWrapper(open(file_name, 'rb'))
     file_mimetype = mimetypes.guess_type(file_name)
     response = HttpResponse(file_wrapper, content_type=file_mimetype)
