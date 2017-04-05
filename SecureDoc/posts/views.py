@@ -76,8 +76,6 @@ def post_detail(request, post_id):
 def find_shared(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     share_withs = ShareWith.objects.filter(post=post)
-    for user in share_withs:
-        print(user.nominated_user)
     return share_withs
 
 

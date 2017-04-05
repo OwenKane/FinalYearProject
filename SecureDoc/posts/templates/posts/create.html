@@ -41,12 +41,12 @@
         {% load wysiwyg %}
         {% wysiwyg_setup %}
 
-        <textarea id="foo" name="document"></textarea>
+        <textarea id="editor" name="document"></textarea>
         <input type="hidden" name="doc" id="doc">
         <input type="hidden" name="key" id="key">
         <input type="hidden" name="iv" id="iv">
 
-        {% wysiwyg_editor "foo" %}
+        {% wysiwyg_editor "editor" %}
 
         <br/>
 
@@ -74,7 +74,7 @@
                 document.getElementById("key").value = key;
                 document.getElementById("iv").value = iv2;
 
-                var doc = CKEDITOR.instances["foo"].getData();
+                var doc = CKEDITOR.instances["editor"].getData();
                 var encrypted = CryptoJS.AES.encrypt(doc, final_key,  {iv: iv2});
                 document.getElementById("doc").value = encrypted;
 

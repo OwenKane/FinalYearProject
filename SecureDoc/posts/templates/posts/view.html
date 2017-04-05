@@ -36,16 +36,16 @@
 
 
                 {%if edit_ability.0.edit_options %}
-                    <textarea id="foo" name="document">{{post.document}}</textarea>
+                    <textarea id="editor" name="document">{{post.document}}</textarea>
                     <input type="hidden" name="test" id="test">
                 {% endif %}
 
                 {%if edit_ability.0.edit_options == False %}
-                    <textarea readonly id="foo" name="document">{{post.document}}</textarea>
+                    <textarea readonly id="editor" name="document">{{post.document}}</textarea>
                 {% endif %}
 
 
-                {% wysiwyg_editor "foo" %}
+                {% wysiwyg_editor "editor" %}
 
                 <br/>
 
@@ -82,10 +82,10 @@
             console.log("Final key is: " + key);
             var decrypted = CryptoJS.AES.decrypt(doc, key, {iv: iv});
             console.log("decrypted is: " + decrypted);
-            CKEDITOR.instances["foo"].setData(decrypted.toString(CryptoJS.enc.Utf8));
+            CKEDITOR.instances["editor"].setData(decrypted.toString(CryptoJS.enc.Utf8));
 
 			function encrypt(){
-			    var doc = CKEDITOR.instances["foo"].getData();
+			    var doc = CKEDITOR.instances["editor"].getData();
 			    var encrypted = CryptoJS.AES.encrypt(doc, key,  {iv: iv});
 
                 document.getElementById("test").value = encrypted;
