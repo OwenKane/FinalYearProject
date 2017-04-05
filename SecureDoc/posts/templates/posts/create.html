@@ -75,7 +75,7 @@
                 document.getElementById("iv").value = iv2;
 
                 var doc = CKEDITOR.instances["editor"].getData();
-                /* Encrypt the data with the ablove info before sending to server */
+                /* Encrypt the data with the above info before sending to server */
                 var encrypted = CryptoJS.AES.encrypt(doc, final_key,  {iv: iv2});
                 document.getElementById("doc").value = encrypted;
 
