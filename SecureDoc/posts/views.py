@@ -227,12 +227,12 @@ def update_nominated(request):
 # Creates the pdf and temp stores it
 def generate_pdf(request):
     try:
-        client = pdfcrowd.Client("owenkane", "844e293362c445a06d79a5f5bb6f9900")
+        client = pdfcrowd.Client("owenkane2", "93b47984bc7e6f35d4834fbd7036b329")
         # Name the file the title of the post
         post_title = request.POST['post_title']
         # Creates empty target file
         output_file = open(post_title + '.pdf', 'wb')
-        html = request.POST.get('doc2pdf', "Failed")
+        html = request.POST.get('doc2pdf', "Failed to post")
         client.convertHtml(html, output_file)
         output_file.close()
     except pdfcrowd.Error as why:
@@ -276,24 +276,33 @@ def download_doc(request):
     return response
 
 
+# Removes the posts object from the DB
+def delete_doc(request):
+    post_id = request.POST['post_title']
+    Post.objects.filter(id=post_id).delete()
+    return home(request)
+
+
 # Creates the doc and temp stores it
 def generate_doc(request):
-    generate_pdf(request)
-    post_title = request.POST['post_title']
-    file_name = post_title + '.pdf'
+    try:
+        client = pdfcrowd.Client("owenkane2", "93b47984bc7e6f35d4834fbd7036b329")
+        # Name the file the title of the post
+        post_title = request.POST['post_title']
+        # Creates empty target file
+        output_file = open(post_title + '.pdf', 'wb')
+        html = request.POST.get('html2doc', "Failed to post")
+        client.convertHtml(html, output_file)
+        output_file.close()
+    except pdfcrowd.Error as why:
+        print('Failed:', why)
+
     api = cloudconvert.Api('ce7WHRtsgw-ZXayCkXX1ke-H53dBWlmnyjw9lzWt5JogRbpV31Fd-W4_8TSsfJmA5D9qpv5TfEAp3ipL5Eba_g')
     process = api.convert({
         'inputformat': 'pdf',
         'outputformat': 'docx',
         'input': 'upload',
-        'file': open(file_name, 'rb')
+        'file': open(post_title + '.pdf', 'rb')
     })
     process.wait()  # wait until conversion finished
     process.download(post_title + '.docx')  # download output file
-
-
-# Removes the posts object from the DB
-def delete_doc(request):
-    post_id = request.POST['post_id']
-    Post.objects.filter(id=post_id).delete()
-    return home(request)
