@@ -24,6 +24,7 @@ def signup(request):
                                                 last_name=request.POST['lname'])
                 login(request, user)  # Log the new user in
                 set_key(request)  # Create the partial key
+                print("Signup hash_enc is: " + request.session['hash'])
                 return redirect('home')
         else:
             return render(request, 'accounts/signup.html', {'error': 'Passwords didn\'t match'})
@@ -46,6 +47,7 @@ def set_key(request):
     # Server abstracts the sending and receiving of sessions. Session contain a session ID – not the data itself
     # So the server doesnt know what the value is.
     request.session['hash'] = hash_enc
+    print("Set key, hash_enc is: " + hash_enc)
 
 
 # Function to log the user in

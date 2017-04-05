@@ -59,6 +59,7 @@
         <script type="text/javascript">
 
             var hash_enc = "{{hash_enc}}";
+            console.log("hash enc is: "+hash_enc);
 
             function encrypt() {
                 /*Create random iv */
@@ -79,6 +80,7 @@
                 var encrypted = CryptoJS.AES.encrypt(doc, final_key,  {iv: iv2});
                 document.getElementById("doc").value = encrypted;
 
+                console.log("Key used is: "+final_key);
                 return false;
             }
 

@@ -278,7 +278,7 @@ def download_doc(request):
 
 # Removes the posts object from the DB
 def delete_doc(request):
-    post_id = request.POST['post_title']
+    post_id = request.POST['post_id']
     Post.objects.filter(id=post_id).delete()
     return home(request)
 

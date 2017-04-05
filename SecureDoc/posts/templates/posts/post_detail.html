@@ -83,7 +83,9 @@
         <div class="row">
             <div class="col-md-6">
                 <h3>Share with Friends</h3>
+
                 <table class="table table-hover">
+                <!--
                 <!-- Display all the users friends then give them user the option to nominate these users to
                      to edit the doc or just view it -->
                     {% for user in users %}
@@ -95,7 +97,7 @@
                                 <input type="hidden" name="share" id="share" value="False">
                                 <input type="hidden" name="post_id" id="post_id" value={{post.id}} >
                                 <input type="hidden" name="friend_username" value={{ user.first.username }} >
-                                <input class="btn btn-primary" type="submit" value="Ability to View" id="share_v">
+                                <input class="btn btn-primary" type="submit" value="Ability to View" onclick="shareDoc()" id="share_v" >
                             </form>
                         </td>
                         <td class="text-right">
@@ -105,7 +107,7 @@
                                 <input type="hidden" name="share" id="share" value="False">
                                 <input type="hidden" name="post_id" id="post_id" value={{post.id}} >
                                 <input type="hidden" name="friend_username" value={{ user.first.username }} >
-                                <input class="btn btn-primary" type="submit" value="Ability to Edit" id="share_e">
+                                <input class="btn btn-primary" type="submit" value="Ability to Edit" onclick="shareDoc()"  id="share_e">
                             </form>
                         </td>
                         <tr></tr>
@@ -135,8 +137,7 @@
     </div>
 
         <script type="text/javascript">
-            document.getElementById("share_v").onclick = shareDoc;
-            document.getElementById("share_e").onclick = shareDoc;
+
             document.getElementById("toPDF").onclick = toPDF;
             document.getElementById("todoc").onclick = todoc;
 
@@ -154,6 +155,7 @@
 
             key = key.toString(CryptoJS.enc.Base64);
             var decrypted = CryptoJS.AES.decrypt(doc, key, {iv: iv});
+            console.log("Key used to dec:" + key);
             CKEDITOR.instances["editor"].setData(decrypted.toString(CryptoJS.enc.Utf8));
 
             function encrypt(){
