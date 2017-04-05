@@ -21,7 +21,7 @@ from wsgiref.util import FileWrapper
 
 # The @login_ required only allows authenticated users to access the below function
 @login_required
-def create(request):
+def create(request):  # function to create new document
     if request.method == 'POST':
         # Check if the have entered at title and body for the document
         if request.POST.get('title', False) and request.POST.get('doc', False):
