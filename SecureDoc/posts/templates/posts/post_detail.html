@@ -21,7 +21,7 @@
             <form method="POST" action="{% url 'posts:update' %}">
                 {% csrf_token %}
 
-                <input type="hidden" name="post_id" value={{post.id}} >
+                <input type="hidden" name="post_id" value={{post.id}} > <!-- Hidden info to post over -->
                 <h3><input id="title" type="text" name="title" value="{{post.title}}"></h3>
                 <br />
 
@@ -29,7 +29,7 @@
                 {% wysiwyg_setup %}
 
                 <textarea id="editor" name="document"></textarea>
-                <input type="hidden" name="test" id="test">
+                <input type="hidden" name="test" id="test"> <!-- Place document body here then post it over -->
 
                 {% wysiwyg_editor "editor" %}
 
@@ -45,7 +45,7 @@
             <form method="POST" action="{% url 'posts:download_pdf' %}">
                 {% csrf_token %}
 
-                <input type="hidden" name="doc2pdf" id="doc2pdf">
+                <input type="hidden" name="doc2pdf" id="doc2pdf"> <!-- Hidden info to post over -->
                 <input type="hidden" name="post_title" value={{post.title}} >
                 <button class="btn btn-primary" type="submit" value="pdf" id="toPDF">
                     <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Export to PDF
@@ -57,7 +57,7 @@
             <form method="POST" action="{% url 'posts:download_doc' %}">
                 {% csrf_token %}
 
-                <input type="hidden" name="html2doc" id="html2doc">
+                <input type="hidden" name="html2doc" id="html2doc"> <!-- Hidden info to post over -->
                 <input type="hidden" name="post_title" value={{post.title}} >
                 <button class="btn btn-primary" type="submit" value="doc" id="todoc">
                     <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Export to docx
@@ -83,12 +83,14 @@
             <div class="col-md-6">
                 <h3>Share with Friends</h3>
                 <table class="table table-hover">
+                <!-- Display all the users friends then give them user the option to nominate these users to
+                     to edit the doc or just view it -->
                     {% for user in users %}
                         <td>{{user.first.username}}</td>
                         <td class="text-right">
                             <form method="post" action="{% url 'posts:share_viewing' %}" name="share_viewing" id="sv">
                                 {% csrf_token %}
-                                <input type="hidden" name="doc" id="doc">
+                                <input type="hidden" name="doc" id="doc"> <!-- Hidden info to post over -->
                                 <input type="hidden" name="share" id="share" value="False">
                                 <input type="hidden" name="post_id" id="post_id" value={{post.id}} >
                                 <input type="hidden" name="friend_username" value={{ user.first.username }} >
@@ -98,7 +100,7 @@
                         <td class="text-right">
                             <form method="post" action="{% url 'posts:share_editing' %}" name="share_editing" id="se">
                                 {% csrf_token %}
-                                <input type="hidden" name="doc2" id="doc2">
+                                <input type="hidden" name="doc2" id="doc2"> <!-- Hidden info to post over -->
                                 <input type="hidden" name="share" id="share" value="False">
                                 <input type="hidden" name="post_id" id="post_id" value={{post.id}} >
                                 <input type="hidden" name="friend_username" value={{ user.first.username }} >
@@ -113,6 +115,7 @@
             <div class="col-md-6">
                 <h3>Revoke Friends Access</h3>
                 <table class="table table-hover">
+                <!-- Display all users with the ability to view or edit the current document -->
                     {% for user in shared_with %}
                         <td>{{user.nominated_user}}</td>
                         <td class="text-right">

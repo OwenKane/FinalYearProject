@@ -5,14 +5,9 @@
     <script type='text/javascript' src="/static/js/aes.js"></script>
     <script type='text/javascript' src="/static/js/pbkdf2.js"></script>
     <script type='text/javascript' src="/static/js/sha256.js"></script>
-
-
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script type="text/javascript" src="/static/ckeditor/ckeditor/ckeditor.js"></script>
     <script type="text/javascript" src="/static/ckeditor/ckeditor-init.js"></script>
-
-
-
 
     <link rel="stylesheet" type="text/css" href="/static/css/doc.css">
     <meta charset="UTF-8">
@@ -25,6 +20,8 @@
 
     <h1>New Post!</h1>
 
+
+    <!-- Display any errors to the user if the previous attempt failed -->
     {%if error %}
         <div class="alert alert-danger" role="alert">
         {{ error }}
@@ -38,11 +35,11 @@
         <br /><br />
 
 
-        {% load wysiwyg %}
+        {% load wysiwyg %} <!-- Load editor -->
         {% wysiwyg_setup %}
 
         <textarea id="editor" name="document"></textarea>
-        <input type="hidden" name="doc" id="doc">
+        <input type="hidden" name="doc" id="doc"> <!-- Hide data to post -->
         <input type="hidden" name="key" id="key">
         <input type="hidden" name="iv" id="iv">
 
@@ -51,6 +48,7 @@
         <br/>
 
         <br/><br/>
+        <!-- Save button calls the encrypt function -->
         <button class="btn btn-primary" type="submit" value="Save" onclick="encrypt()">
             <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save
         </button>
@@ -63,10 +61,12 @@
             var hash_enc = "{{hash_enc}}";
 
             function encrypt() {
+                /*Create random iv */
                 var iv = new Uint32Array(1);
                 iv = window.crypto.getRandomValues(iv);
                 var iv2 = iv.toString(CryptoJS.enc.Base64);
 
+                /* Create key from iv */
                 var key = CryptoJS.SHA256(iv.toString());
                 var userKey = String(key) + String(hash_enc);
                 var final_key = userKey.toString(CryptoJS.enc.Base64);
@@ -75,6 +75,7 @@
                 document.getElementById("iv").value = iv2;
 
                 var doc = CKEDITOR.instances["editor"].getData();
+                /* Encrypt the data with the ablove info before sending to server */
                 var encrypted = CryptoJS.AES.encrypt(doc, final_key,  {iv: iv2});
                 document.getElementById("doc").value = encrypted;
 

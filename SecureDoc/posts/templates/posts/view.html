@@ -15,12 +15,18 @@
 
 
     <div class="container">
+
+        <!-- Depending on the permissions the user has on the doc, it differs what form is created and the
+             destination they lead to -->
+
+        <!-- If the have edit ability the form with post the data to the update function -->
         {%if edit_ability.0.edit_options == True %}
             <form method="POST" action="{% url 'posts:update_nominated' %}">
                 <input type="hidden" name="post_id" value={{post.id}} >
                 <input type="hidden" name="title" id="title" value={{ post.title }}>
         {% endif %}
 
+        <!-- However if they have only view functionally does not lead to update, just the homepage -->
         {%if edit_ability.0.edit_options == False %}
             <form method="POST" action="{% url 'home' %}">
         {% endif %}
@@ -31,15 +37,18 @@
                 <br />
 
 
-                {% load wysiwyg %}
+                {% load wysiwyg %} <!-- Load the editor -->
                 {% wysiwyg_setup %}
 
+                <!-- Depending on the user permissions, display the corresponding textarea (editor) -->
 
+                <!-- regular textarea if the are able to edit the doc -->
                 {%if edit_ability.0.edit_options %}
                     <textarea id="editor" name="document">{{post.document}}</textarea>
                     <input type="hidden" name="test" id="test">
                 {% endif %}
 
+                <!-- If the user only has read only permissions, set the text area to readonly -->
                 {%if edit_ability.0.edit_options == False %}
                     <textarea readonly id="editor" name="document">{{post.document}}</textarea>
                 {% endif %}
@@ -49,12 +58,16 @@
 
                 <br/>
 
+                <!-- Depending on the user permissions, display the corresponding button -->
+
+                <!-- Display a save button if they have edit abilities -->
                 {%if edit_ability.0.edit_options %}
                     <button class="btn btn-primary" type="submit" value="Save" onclick="encrypt()">
                         <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save
                     </button>
                 {% endif %}
 
+                <!-- Display a home button if they have read only ability -->
                 {%if edit_ability.0.edit_options == False %}
                     <button class="btn btn-primary" type="submit" value="Save">
                         <span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home
@@ -69,30 +82,27 @@
             var iv = "{{cipher.iv}}";
             var doc = "{{post.document|escapejs}}";
             var edit_option = "{{ cipher.edit_options }}";
-            console.log("cipher.key is: " + key);
 
-
+            /*
             if(edit_option == false){
-                var hash_enc = "{{hash_enc}}";
+                var hash_enc =
                 var userKey = String(key) + String(hash_enc);
                 var key = userKey.toString(CryptoJS.enc.Base64);
                 console.log("Extra key is: " + key);
-            }
+            }*/
 
-            console.log("Final key is: " + key);
+            /* Decrypt doc and set the editor to the result of the decrypt */
             var decrypted = CryptoJS.AES.decrypt(doc, key, {iv: iv});
-            console.log("decrypted is: " + decrypted);
             CKEDITOR.instances["editor"].setData(decrypted.toString(CryptoJS.enc.Utf8));
 
 			function encrypt(){
+			    /* Get the editors data and ecncypt it before sending it back to the database */
 			    var doc = CKEDITOR.instances["editor"].getData();
 			    var encrypted = CryptoJS.AES.encrypt(doc, key,  {iv: iv});
 
                 document.getElementById("test").value = encrypted;
 
                 var value = document.getElementById("test").value;
-			    console.log(value);
-
                 return false;
             }
         </script>
